@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}IGD - SIM RS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-exclamation-triangle"></i> IGD (Instalasi Gawat Darurat)</h2>
+    <a href="{{ url_for('igd.baru') }}" class="btn btn-danger">
+        <i class="bi bi-plus-circle"></i> Pasien Baru
+    </a>
+</div>
+
+<!-- Triage Legend -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex gap-3">
+            <span class="badge bg-danger fs-6">MERAH - Emergent</span>
+            <span class="badge bg-warning text-dark fs-6">KUNING - Urgent</span>
+            <span class="badge bg-success fs-6">HIJAU - Stable</span>
+        </div>
+    </div>
+</div>
+
+<!-- IGD List -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Waktu Masuk</th>
+                        <th>Pasien</th>
+                        <th>Keluhan</th>
+                        <th>Triage</th>
+                        <th>Dokter</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in igd_list %}
+                    <tr>
+                        <td>{{ i.id }}</td>
+                        <td>{{ i.waktu_masuk.strftime('%d-%m-%Y %H:%M') }}</td>
+                        <td>{{ i.pasien.nama_lengkap }}</td>
+                        <td>{{ i.keluhan_utama[:30] }}{% if i.keluhan_utama|length > 30 %}...{% endif %}</td>
+                        <td>
+                            {% if i.triage == 'merah' %}
+                            <span class="badge bg-danger">MERAH</span>
+                            {% elif i.triage == 'kuning' %}
+                            <span class="badge bg-warning text-dark">KUNING</span>
+                            {% elif i.triage == 'hijau' %}
+                            <span class="badge bg-success">HIJAU</span>
+                            {% else %}
+                            <span class="badge bg-secondary">-</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ i.dokter.nama_lengkap if i.dokter else '-' }}</td>
+                        <td>
+                            {% if i.status == 'aktif' %}
+                            <span class="badge bg-primary">Aktif</span>
+                            {% elif i.status == 'rawat_inap' %}
+                            <span class="badge bg-info">Rawat Inap</span>
+                            {% elif i.status == 'pulang' %}
+                            <span class="badge bg-secondary">Pulang</span>
+                            {% else %}
+                            <span class="badge bg-dark">Rujuk</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('igd.detail', id=i.id) }}" class="btn btn-sm btn-primary" title="Detail">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if i.status == 'aktif' %}
+                            <a href="{{ url_for('igd.periksa', id=i.id) }}" class="btn btn-sm btn-success" title="Periksa">
+                                <i class="bi bi-clipboard-check"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">Tidak ada pasien IGD</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

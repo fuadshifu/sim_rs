@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Pulangkan dari IGD - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-box-arrow-right"></i> Pulangkan dari IGD</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ igd.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ igd.pasien.nik }}</small></p>
+                <p class="mb-0"><small>JK: {{ igd.pasien.jenis_kelamin }}</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('igd.pulang', id=igd.id) }}">
+                    <div class="mb-3">
+                        <label for="tindakan" class="form-label">Catatan Pulang / Saran</label>
+                        <textarea class="form-control" id="tindakan" name="tindakan" rows="3" placeholder="Catatan saat pulang..."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Pulangkan
+                        </button>
+                        <a href="{{ url_for('igd.detail', id=igd.id) }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

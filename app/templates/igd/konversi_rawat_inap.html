@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Konversi ke Rawat Inap - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-bed"></i> Konversi ke Rawat Inap</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ igd.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ igd.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ igd.pasien.jenis_kelamin }}</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('igd.konversi_rawat_inap', id=igd.id) }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="kamar_id" class="form-label">Kamar <span class="text-danger">*</span></label>
+                                <select class="form-select" id="kamar_id" name="kamar_id" required onchange="loadTempatTidur()">
+                                    <option value="">Pilih Kamar...</option>
+                                    {% for kamar in kamar_list %}
+                                    <option value="{{ kamar.id }}">{{ kamar.nama }} - {{ kamar.kelas }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tempat_tidur_id" class="form-label">Tempat Tidur</label>
+                                <select class="form-select" id="tempat_tidur_id" name="tempat_tidur_id">
+                                    <option value="">Pilih...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="diagnosa_masuk" class="form-label">Diagnosa Masuk</label>
+                        <textarea class="form-control" id="diagnosa_masuk" name="diagnosa_masuk" rows="2"></textarea>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Pasien akan dipindahkan ke modul Rawat Inap
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Pindahkan
+                        </button>
+                        <a href="{{ url_for('igd.detail', id=igd.id) }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadTempatTidur() {
+    var kamar_id = document.getElementById('kamar_id').value;
+    var tt_select = document.getElementById('tempat_tidur_id');
+
+    tt_select.innerHTML = '<option value="">Pilih...</option>';
+
+    if (kamar_id) {
+        fetch('/rawat-inap/get-tempat-tidur/' + kamar_id)
+            .then(response => response.json())
+            .then(data => {
+                data.results.forEach(function(tt) {
+                    var option = document.createElement('option');
+                    option.value = tt.id;
+                    option.text = 'TT ' + tt.nomor;
+                    tt_select.appendChild(option);
+                });
+            });
+    }
+}
+</script>
+{% endblock %}

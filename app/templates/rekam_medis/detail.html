@@ -1,0 +1,93 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail Rekam Medis - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-file-medical"></i> Detail Rekam Medis</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">SOAP Note</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="20%"><strong>Subjective</strong></td>
+                        <td>: {{ rm.subjective or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Objective</strong></td>
+                        <td>: {{ rm.objective or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assessment (Diagnosa)</strong></td>
+                        <td>: <strong>{{ rm.assessment or '-' }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plan (Rencana)</strong></td>
+                        <td>: {{ rm.plan or '-' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Kunjungan</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="20%"><strong>Tanggal</strong></td>
+                        <td>: {{ rm.tanggal.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jenis Layanan</strong></td>
+                        <td>:
+                            {% if rm.jenis_layanan == 'rawat_jalan' %}
+                            <span class="badge bg-info">Rawat Jalan</span>
+                            {% elif rm.jenis_layanan == 'rawat_inap' %}
+                            <span class="badge bg-success">Rawat Inap</span>
+                            {% elif rm.jenis_layanan == 'igd' %}
+                            <span class="badge bg-danger">IGD</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Umum</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dokter</strong></td>
+                        <td>: {{ rm.dokter.nama_lengkap if rm.dokter else '-' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ rm.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ rm.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ rm.pasien.jenis_kelamin }} | Gol. Darah: {{ rm.pasien.goldarah or '-' }}</small></p>
+                <p class="mb-0"><small>Tgl Lahir: {{ rm.pasien.tanggal_lahir.strftime('%d-%m-%Y') }}</small></p>
+                <hr>
+                <a href="{{ url_for('rekam_medis.pasien', pasien_id=rm.pasien_id) }}" class="btn btn-sm btn-info w-100">
+                    <i class="bi bi-clock-history"></i> Lihat Riwayat
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('rekam_medis.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

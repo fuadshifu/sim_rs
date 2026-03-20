@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail Resep - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-prescription2"></i> Detail Resep</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Resep</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>No. Resep</strong></td>
+                        <td>: {{ resep.id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal</strong></td>
+                        <td>: {{ resep.tanggal.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dokter</strong></td>
+                        <td>: {{ resep.dokter.nama_lengkap }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>:
+                            {% if resep.status == 'menunggu' %}
+                            <span class="badge bg-warning">Menunggu</span>
+                            {% elif resep.status == 'selesai' %}
+                            <span class="badge bg-success">Selesai</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Batal</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if resep.catatan %}
+                    <tr>
+                        <td><strong>Catatan</strong></td>
+                        <td>: {{ resep.catatan }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Daftar Obat</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Obat</th>
+                            <th>Jumlah</th>
+                            <th>Dosis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in resep.details %}
+                        <tr>
+                            <td>{{ detail.obat.nama }}</td>
+                            <td>{{ detail.jumlah }} {{ detail.obat.satuan }}</td>
+                            <td>{{ detail.dosis or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ resep.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ resep.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ resep.pasien.jenis_kelamin }}</small></p>
+                <p class="mb-0"><small>Tgl Lahir: {{ resep.pasien.tanggal_lahir.strftime('%d-%m-%Y') }}</small></p>
+            </div>
+        </div>
+
+        {% if resep.status == 'menunggu' %}
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('farmasi.resep_selesai', id=resep.id) }}" class="btn btn-success" onclick="return confirm('Yakin ingin memproses resep? Stok obat akan dikurangi.')">
+                <i class="bi bi-check2-all"></i> Proses Resep
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('farmasi.resep') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Laporan Keuangan - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-cash"></i> Laporan Pendapatan</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Tanggal Awal</label>
+                <input type="date" class="form-control" name="tanggal_awal" value="{{ tanggal_awal }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Tanggal Akhir</label>
+                <input type="date" class="form-control" name="tanggal_akhir" value="{{ tanggal_akhir }}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h3>Total Pendapatan: Rp {{ "{:,.0f}".format(total_pendapatan) }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Pendapatan per Layanan</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    {% for layanan, total in summary_by_layanan.items() %}
+                    <tr>
+                        <td>{{ layanan }}</td>
+                        <td class="text-end">Rp {{ "{:,.0f}".format(total) }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Metode Pembayaran</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    {% for metode, total in summary_by_metode.items() %}
+                    <tr>
+                        <td>{{ metode }}</td>
+                        <td class="text-end">Rp {{ "{:,.0f}".format(total) }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Detail Transaksi</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Invoice</th>
+                    <th>Pasien</th>
+                    <th>Metode</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pembayaran %}
+                <tr>
+                    <td>{{ p.tanggal.strftime('%d-%m-%Y %H:%M') }}</td>
+                    <td>{{ p.billing.nomor_invoice }}</td>
+                    <td>{{ p.billing.pasien.nama_lengkap }}</td>
+                    <td>{{ p.metode }}</td>
+                    <td>Rp {{ "{:,.0f}".format(p.jumlah_bayar) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Tidak ada transaksi</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Login - SIM RS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow mt-5">
+            <div class="card-header bg-primary text-white text-center">
+                <h4><i class="bi bi-hospital"></i> SIM RS</h4>
+                <p class="mb-0">Sistem Informasi Manajemen Rumah Sakit</p>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" required autofocus>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Belum punya akun? <a href="{{ url_for('auth.register') }}">Daftar di sini</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

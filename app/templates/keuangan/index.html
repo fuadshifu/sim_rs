@@ -1,0 +1,37 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Keuangan - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-graph-up"></i> Keuangan</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-cash"></i> Laporan Pendapatan</h5>
+                <p class="card-text">Lihat laporan pendapatan berdasarkan periode</p>
+                <a href="{{ url_for('keuangan.laporan') }}" class="btn btn-light">Buka</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-bar-chart"></i> Grafik Pendapatan</h5>
+                <p class="card-text">Lihat grafik pendapatan bulanan</p>
+                <a href="{{ url_for('keuangan.pendapatan') }}" class="btn btn-light">Buka</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-exclamation-circle"></i> Piutang</h5>
+                <p class="card-text">Lihat tagihan yang belum lunas</p>
+                <a href="{{ url_for('keuangan.piutang') }}" class="btn btn-dark">Buka</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

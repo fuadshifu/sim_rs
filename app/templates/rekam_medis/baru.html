@@ -1,0 +1,78 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Rekam Medis Baru - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-file-plus"></i> Rekam Medis Baru</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('rekam_medis.baru') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pasien_id" class="form-label">Pasien <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pasien_id" name="pasien_id" required>
+                            <option value="">Pilih Pasien...</option>
+                            {% for pasien in pasien_list %}
+                            <option value="{{ pasien.id }}" {% if pasien_id == pasien.id|string %}selected{% endif %}>
+                                {{ pasien.nik }} - {{ pasien.nama_lengkap }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="jenis_layanan" class="form-label">Jenis Layanan</label>
+                        <select class="form-select" id="jenis_layanan" name="jenis_layanan">
+                            <option value="">Pilih...</option>
+                            <option value="rawat_jalan" {% if jenis_layanan == 'rawat_jalan' %}selected{% endif %}>Rawat Jalan</option>
+                            <option value="rawat_inap" {% if jenis_layanan == 'rawat_inap' %}selected{% endif %}>Rawat Inap</option>
+                            <option value="igd" {% if jenis_layanan == 'igd' %}selected{% endif %}>IGD</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="layanan_id" class="form-label">No. Layanan</label>
+                        <input type="number" class="form-control" id="layanan_id" name="layanan_id" value="{{ layanan_id or '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <h5 class="mb-3">SOAP Note</h5>
+
+            <div class="mb-3">
+                <label for="subjective" class="form-label">S - Subjective (Keluhan Pasien)</label>
+                <textarea class="form-control" id="subjective" name="subjective" rows="2" placeholder="Keluhan yang dirasakan pasien..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="objective" class="form-label">O - Objective (Pemeriksaan Fisik)</label>
+                <textarea class="form-control" id="objective" name="objective" rows="2" placeholder="Hasil pemeriksaan fisik..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="assessment" class="form-label">A - Assessment (Diagnosa) <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="assessment" name="assessment" rows="2" placeholder="Diagnosa..." required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="plan" class="form-label">P - Plan (Rencana Pengobatan)</label>
+                <textarea class="form-control" id="plan" name="plan" rows="2" placeholder="Rencana pengobatan..."></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Simpan
+                </button>
+                <a href="{{ url_for('rekam_medis.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

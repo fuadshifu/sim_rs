@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Data Obat - SIM RS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-capsule"></i> Data Obat</h2>
+    <div>
+        <a href="{{ url_for('farmasi.stok_rendah') }}" class="btn btn-warning me-2">
+            <i class="bi bi-exclamation-triangle"></i> Stok Rendah
+        </a>
+        <a href="{{ url_for('farmasi.obat_baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Tambah Obat
+        </a>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="search" placeholder="Cari nama atau kode obat..." value="{{ search }}">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="jenis">
+                    <option value="">Semua Jenis</option>
+                    <option value="Tablet" {% if jenis == 'Tablet' %}selected{% endif %}>Tablet</option>
+                    <option value="Kapsul" {% if jenis == 'Kapsul' %}selected{% endif %}>Kapsul</option>
+                    <option value="Sirup" {% if jenis == 'Sirup' %}selected{% endif %}>Sirup</option>
+                    <option value="Injeksi" {% if jenis == 'Injeksi' %}selected{% endif %}>Injeksi</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Cari
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Obat List -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Obat</th>
+                        <th>Jenis</th>
+                        <th>Dosis</th>
+                        <th>Stok</th>
+                        <th>Min. Stok</th>
+                        <th>Harga</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obat in obat_list %}
+                    <tr class="{% if obat.stok <= obat.stok_minimum %}table-warning{% endif %}">
+                        <td>{{ obat.kode or '-' }}</td>
+                        <td>{{ obat.nama }}</td>
+                        <td>{{ obat.jenis or '-' }}</td>
+                        <td>{{ obat.dosis or '-' }} {{ obat.satuan or '' }}</td>
+                        <td>
+                            {% if obat.stok <= obat.stok_minimum %}
+                            <span class="badge bg-danger">{{ obat.stok }}</span>
+                            {% else %}
+                            {{ obat.stok }}
+                            {% endif %}
+                        </td>
+                        <td>{{ obat.stok_minimum }}</td>
+                        <td>Rp {{ "{:,.0f}".format(obat.harga) }}</td>
+                        <td>
+                            <a href="{{ url_for('farmasi.obat_edit', id=obat.id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">Tidak ada obat</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

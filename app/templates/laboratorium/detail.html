@@ -1,0 +1,129 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail Pemeriksaan Lab - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-droplet"></i> Detail Pemeriksaan Laboratorium</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Order</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>No. Order</strong></td>
+                        <td>: <span class="badge bg-primary">{{ pemeriksaan.nomor_order }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal Order</strong></td>
+                        <td>: {{ pemeriksaan.tanggal_order.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dokter Pengirim</strong></td>
+                        <td>: {{ pemeriksaan.dokter.nama_lengkap if pemeriksaan.dokter else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diagnosa</strong></td>
+                        <td>: {{ pemeriksaan.diagnosa or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>:
+                            {% if pemeriksaan.status == 'menunggu' %}
+                            <span class="badge bg-warning">Menunggu Sampel</span>
+                            {% elif pemeriksaan.status == 'diambil' %}
+                            <span class="badge bg-info">Sampel Diambil</span>
+                            {% elif pemeriksaan.status == 'proses' %}
+                            <span class="badge bg-primary">Sedang Proses</span>
+                            {% else %}
+                            <span class="badge bg-success">Selesai</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Daftar Pemeriksaan</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Jenis Pemeriksaan</th>
+                            <th>Kategori</th>
+                            <th>Hasil</th>
+                            <th>Nilai Normal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in pemeriksaan.details %}
+                        <tr>
+                            <td>{{ detail.jenis_pemeriksaan.nama }}</td>
+                            <td>{{ detail.jenis_pemeriksaan.kategori or '-' }}</td>
+                            <td>{{ detail.hasil or '-' }}</td>
+                            <td>{{ detail.nilai_normal or '-' }} {{ detail.unit or '' }}</td>
+                            <td>
+                                {% if detail.status == 'menunggu' %}
+                                <span class="badge bg-warning">Menunggu</span>
+                                {% elif detail.status == 'proses' %}
+                                <span class="badge bg-primary">Proses</span>
+                                {% else %}
+                                <span class="badge bg-success">Selesai</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ pemeriksaan.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ pemeriksaan.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ pemeriksaan.pasien.jenis_kelamin }} | Gol. Darah: {{ pemeriksaan.pasien.goldarah or '-' }}</small></p>
+                <p class="mb-0"><small>Tgl Lahir: {{ pemeriksaan.pasien.tanggal_lahir.strftime('%d-%m-%Y') }}</small></p>
+            </div>
+        </div>
+
+        {% if pemeriksaan.status != 'selesai' %}
+        <div class="d-grid gap-2">
+            {% if pemeriksaan.status == 'menunggu' %}
+            <a href="{{ url_for('laboratorium.ambil_sampel', id=pemeriksaan.id) }}" class="btn btn-info">
+                <i class="bi bi-droplet-half"></i> Ambil Sampel
+            </a>
+            {% endif %}
+            {% if pemeriksaan.status == 'diambil' %}
+            <a href="{{ url_for('laboratorium.proses', id=pemeriksaan.id) }}" class="btn btn-primary">
+                <i class="bi bi-gear"></i> Mulai Proses
+            </a>
+            {% endif %}
+            {% if pemeriksaan.status in ['diambil', 'proses'] %}
+            <a href="{{ url_for('laboratorium.hasil', id=pemeriksaan.id) }}" class="btn btn-success">
+                <i class="bi bi-check2-all"></i> Input Hasil
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('laboratorium.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Stok Rendah - SIM RS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-exclamation-triangle"></i> Stok Barang Rendah</h2>
+    <a href="{{ url_for('gudang.index') }}" class="btn btn-secondary">Kembali</a>
+</div>
+
+{% if barang_list %}
+<div class="alert alert-danger">
+    <strong>{{ barang_list|length }} barang</strong> memiliki stok di bawah minimum!
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Kategori</th>
+                    <th>Stok</th>
+                    <th>Min. Stok</th>
+                    <th>Kekurangan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in barang_list %}
+                <tr class="table-danger">
+                    <td>{{ b.kode or '-' }}</td>
+                    <td>{{ b.nama }}</td>
+                    <td>{{ b.kategori.nama if b.kategori else '-' }}</td>
+                    <td><strong>{{ b.stok }}</strong></td>
+                    <td>{{ b.stok_minimum }}</td>
+                    <td><span class="badge bg-danger">{{ b.stok_minimum - b.stok }}</span></td>
+                    <td>
+                        <a href="{{ url_for('gudang.transaksi_baru') }}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-plus-circle"></i> Tambah
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-success">
+    <i class="bi bi-check-circle"></i> Semua stok barang aman!
+</div>
+{% endif %}
+{% endblock %}

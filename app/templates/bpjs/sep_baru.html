@@ -1,0 +1,164 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Buat SEP BPJS - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-credit-card"></i> Buat Surat Eligibilitas Peserta (SEP)</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('bpjs.sep_baru') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pasien_id" class="form-label">Pilih Pasien <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pasien_id" name="pasien_id" required>
+                            <option value="">-- Pilih Pasien --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Cari Pasien</label>
+                        <input type="text" class="form-control" id="cari_pasien" placeholder="Nama, NIK, atau No. BPJS...">
+                    </div>
+                </div>
+            </div>
+
+            <div id="info_pasien" class="alert alert-info d-none">
+                <h6>Informasi Pasien:</h6>
+                <p class="mb-0">
+                    <strong>Nama:</strong> <span id="pasien_nama"></span> |
+                    <strong>NIK:</strong> <span id="pasien_nik"></span> |
+                    <strong>BPJS:</strong> <span id="pasien_bpjs"></span> |
+                    <strong>Kelas:</strong> <span id="pasien_kelas"></span>
+                </p>
+            </div>
+
+            <hr>
+
+            <h6 class="mb-3">Detail SEP</h6>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="faskes_asal" class="form-label">Faskes Asal Rujukan</label>
+                        <input type="text" class="form-control" id="faskes_asal" name="faskes_asal" placeholder="Nama Faskes">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="referensi" class="form-label">No. Rujukan</label>
+                        <input type="text" class="form-control" id="referensi" name="referensi" placeholder="Nomor rujukan">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="icd10_id" class="form-label">Diagnosa Awal (ICD-10)</label>
+                        <select class="form-select" id="icd10_id" name="icd10_id">
+                            <option value="">-- Pilih Diagnosa --</option>
+                            {% for icd in icd10_list %}
+                            <option value="{{ icd.id }}">{{ icd.kode }} - {{ icd.nama }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="diagnosa_awal" class="form-label">Nama Diagnosa (Text)</label>
+                        <input type="text" class="form-control" id="diagnosa_awal" name="diagnosa_awal" placeholder="Nama diagnosa">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="kelas_rawat" class="form-label">Kelas Rawat</label>
+                        <select class="form-select" id="kelas_rawat" name="kelas_rawat">
+                            <option value="">-- Sama dengan Kelas BPJS --</option>
+                            <option value="Kelas 1">Kelas 1</option>
+                            <option value="Kelas 2">Kelas 2</option>
+                            <option value="Kelas 3">Kelas 3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Generate SEP
+                </button>
+                <a href="{{ url_for('bpjs.sep_list') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cariInput = document.getElementById('cari_pasien');
+    const pasienSelect = document.getElementById('pasien_id');
+    const infoDiv = document.getElementById('info_pasien');
+
+    let debounceTimer;
+
+    cariInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const q = this.value;
+
+        if (q.length < 2) {
+            pasienSelect.innerHTML = '<option value="">-- Pilih Pasien --</option>';
+            return;
+        }
+
+        debounceTimer = setTimeout(function() {
+            fetch(`/bpjs/sep/cari-pasien?q=${encodeURIComponent(q)}`)
+                .then(response => response.json())
+                .then(data => {
+                    pasienSelect.innerHTML = '<option value="">-- Pilih Pasien --</option>';
+                    data.forEach(p => {
+                        const option = document.createElement('option');
+                        option.value = p.id;
+                        option.textContent = `${p.nama} (${p.bpjs})`;
+                        option.dataset.nama = p.nama;
+                        option.dataset.nik = p.nik;
+                        option.dataset.bpjs = p.bpjs;
+                        option.dataset.kelas = p.kelas || '-';
+                        option.dataset.status = p.status;
+                        pasienSelect.appendChild(option);
+                    });
+                });
+        }, 300);
+    });
+
+    pasienSelect.addEventListener('change', function() {
+        const selected = this.options[this.selectedIndex];
+        if (selected.value) {
+            document.getElementById('pasien_nama').textContent = selected.dataset.nama;
+            document.getElementById('pasien_nik').textContent = selected.dataset.nik;
+            document.getElementById('pasien_bpjs').textContent = selected.dataset.bpjs;
+            document.getElementById('pasien_kelas').textContent = selected.dataset.kelas;
+
+            infoDiv.classList.remove('d-none');
+
+            if (selected.dataset.status !== 'aktif') {
+                infoDiv.className = 'alert alert-warning';
+                infoDiv.innerHTML += '<p class="mb-0 mt-2"><strong>Warning:</strong> Status BPJS tidak aktif!</p>';
+            } else {
+                infoDiv.className = 'alert alert-info';
+            }
+        } else {
+            infoDiv.classList.add('d-none');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tambah Obat - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-capsule"></i> Tambah Obat Baru</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('farmasi.obat_baru') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nama" class="form-label">Nama Obat <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama" name="nama" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="kode" class="form-label">Kode</label>
+                        <input type="text" class="form-control" id="kode" name="kode" placeholder="Contoh: OBT-001">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="jenis" class="form-label">Jenis</label>
+                        <select class="form-select" id="jenis" name="jenis">
+                            <option value="">Pilih...</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Kapsul">Kapsul</option>
+                            <option value="Sirup">Sirup</option>
+                            <option value="Injeksi">Injeksi</option>
+                            <option value="Salep">Salep</option>
+                            <option value="Obat Tetes">Obat Tetes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="dosis" class="form-label">Dosis</label>
+                        <input type="text" class="form-control" id="dosis" name="dosis" placeholder="Contoh: 500">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="satuan" class="form-label">Satuan</label>
+                        <input type="text" class="form-control" id="satuan" name="satuan" placeholder="mg, ml, tablet">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="stok" class="form-label">Stok Awal</label>
+                        <input type="number" class="form-control" id="stok" name="stok" value="0">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="stok_minimum" class="form-label">Stok Minimum</label>
+                        <input type="number" class="form-control" id="stok_minimum" name="stok_minimum" value="10">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="harga" class="form-label">Harga (Rp)</label>
+                        <input type="number" class="form-control" id="harga" name="harga" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Simpan
+                </button>
+                <a href="{{ url_for('farmasi.obat') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

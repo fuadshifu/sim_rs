@@ -1,0 +1,64 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Periksa IGD - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-clipboard-check"></i> Periksa Pasien IGD</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ igd.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ igd.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ igd.pasien.jenis_kelamin }}</small></p>
+                <hr>
+                <p class="mb-1"><small><strong>Keluhan:</strong></small></p>
+                <p>{{ igd.keluhan_utama or '-' }}</p>
+                <hr>
+                <p class="mb-0">
+                    <small>Triage:
+                    {% if igd.triage == 'merah' %}
+                    <span class="badge bg-danger">MERAH</span>
+                    {% elif igd.triage == 'kuning' %}
+                    <span class="badge bg-warning text-dark">KUNING</span>
+                    {% else %}
+                    <span class="badge bg-success">HIJAU</span>
+                    {% endif %}
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('igd.periksa', id=igd.id) }}">
+                    <div class="mb-3">
+                        <label for="diagnose_awal" class="form-label">Diagnosa Awal</label>
+                        <textarea class="form-control" id="diagnose_awal" name="diagnose_awal" rows="3" placeholder="Diagnosa awal..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tindakan" class="form-label">Tindakan / Pengobatan</label>
+                        <textarea class="form-control" id="tindakan" name="tindakan" rows="3" placeholder="Tindakan yang dilakukan..."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Simpan
+                        </button>
+                        <a href="{{ url_for('igd.detail', id=igd.id) }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

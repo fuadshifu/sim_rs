@@ -1,0 +1,58 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Transaksi Stock Baru - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-plus-circle"></i> Transaksi Stock Baru</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Barang</label>
+                        <select class="form-select" name="barang_id" required>
+                            <option value="">Pilih...</option>
+                            {% for b in barang_list %}
+                            <option value="{{ b.id }}">{{ b.nama }} (Stok: {{ b.stok }} {{ b.satuan or '' }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Jenis Transaksi</label>
+                        <select class="form-select" name="jenis" required>
+                            <option value="masuk">Stock Masuk</option>
+                            <option value="keluar">Stock Keluar</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah</label>
+                        <input type="number" class="form-control" name="jumlah" required min="1">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Referensi</label>
+                        <input type="text" class="form-control" name="referensi" placeholder="No. PO, No. Resep, dll">
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Catatan</label>
+                <textarea class="form-control" name="catatan" rows="2"></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <a href="{{ url_for('gudang.transaksi') }}" class="btn btn-secondary">Kembali</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

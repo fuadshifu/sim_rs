@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Invoice Baru - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-receipt"></i> Buat Invoice Baru</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('kasir.baru') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pasien_id" class="form-label">Pasien <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pasien_id" name="pasien_id" required onchange="loadLayanan()">
+                            <option value="">Pilih Pasien...</option>
+                            {% for pasien in pasien_list %}
+                            <option value="{{ pasien.id }}">{{ pasien.nik }} - {{ pasien.nama_lengkap }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="layanan" class="form-label">Jenis Layanan <span class="text-danger">*</span></label>
+                        <select class="form-select" id="layanan" name="layanan" required onchange="loadItems()">
+                            <option value="">Pilih...</option>
+                            <option value="rawat_jalan">Rawat Jalan</option>
+                            <option value="rawat_inap">Rawat Inap</option>
+                            <option value="resep">Resep Obat</option>
+                            <option value="laboratorium">Laboratorium</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="item_id" class="form-label">Pilih Layanan <span class="text-danger">*</span></label>
+                        <select class="form-select" id="item_id" name="item_id" required>
+                            <option value="">Pilih layanan dulu...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Total akan dihitung secara otomatis berdasarkan layanan yang dipilih
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Buat Invoice
+                </button>
+                <a href="{{ url_for('kasir.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const layananData = {
+    rawat_jalan: [
+        {% for rj in rawat_jalan %}
+        {id: {{ rj.id }}, text: 'No. Antrian {{ rj.nomor_antrian }} - {{ rj.pasien.nama_lengkap }} - {{ rj.poliklinik.nama if rj.poliklinik else "Poli" }}'},
+        {% endfor %}
+    ],
+    rawat_inap: [
+        {% for ri in rawat_inap %}
+        {id: {{ ri.id }}, text: '{{ ri.pasien.nama_lengkap }} - {{ ri.kamar.nama }} ({{ ri.kamar.kelas }})'},
+        {% endfor %}
+    ],
+    resep: [
+        {% for r in resep %}
+        {id: {{ r.id }}, text: 'Resep No. {{ r.id }} - {{ r.pasien.nama_lengkap }}'},
+        {% endfor %}
+    ],
+    laboratorium: [
+        {% for lab in laboratorium %}
+        {id: {{ lab.id }}, text: '{{ lab.nomor_order }} - {{ lab.pasien.nama_lengkap }}'},
+        {% endfor %}
+    ]
+};
+
+function loadItems() {
+    const layanan = document.getElementById('layanan').value;
+    const itemSelect = document.getElementById('item_id');
+    itemSelect.innerHTML = '<option value="">Pilih...</option>';
+
+    if (layanan && layananData[layanan]) {
+        layananData[layanan].forEach(function(item) {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.text = item.text;
+            itemSelect.appendChild(option);
+        });
+    }
+}
+</script>
+{% endblock %}

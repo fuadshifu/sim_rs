@@ -1,0 +1,51 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Pulang - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-box-arrow-right"></i> Pulangkan Pasien</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ rawat_inap.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ rawat_inap.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ rawat_inap.pasien.jenis_kelamin }}</small></p>
+                <hr>
+                <p class="mb-1"><small><strong>Kamar:</strong> {{ rawat_inap.kamar.nama }}</small></p>
+                <p class="mb-0"><small><strong>Tgl Masuk:</strong> {{ rawat_inap.tanggal_masuk.strftime('%d-%m-%Y') }}</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('rawat_inap.pulang', id=rawat_inap.id) }}">
+                    <div class="mb-3">
+                        <label for="diagnosa_utama" class="form-label">Diagnosa Utama Saat Pulang</label>
+                        <textarea class="form-control" id="diagnosa_utama" name="diagnosa_utama" rows="3" placeholder="Diagnosa akhir..."></textarea>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Tempat tidur akan dikosongkan secara otomatis setelah pasien dipulangkan
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Pulangkan Pasien
+                        </button>
+                        <a href="{{ url_for('rawat_inap.detail', id=rawat_inap.id) }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

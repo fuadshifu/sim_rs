@@ -1,0 +1,60 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Stok Obat Rendah - SIM RS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-exclamation-triangle"></i> Stok Obat Rendah</h2>
+    <a href="{{ url_for('farmasi.obat') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+
+{% if obat_list %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <strong>{{ obat_list|length }} obat</strong> memiliki stok di bawah minimum!
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Obat</th>
+                        <th>Jenis</th>
+                        <th>Stok Saat Ini</th>
+                        <th>Min. Stok</th>
+                        <th>Kekurangan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obat in obat_list %}
+                    <tr class="table-danger">
+                        <td>{{ obat.kode or '-' }}</td>
+                        <td>{{ obat.nama }}</td>
+                        <td>{{ obat.jenis or '-' }}</td>
+                        <td><strong>{{ obat.stok }}</strong></td>
+                        <td>{{ obat.stok_minimum }}</td>
+                        <td><span class="badge bg-danger">{{ obat.stok_minimum - obat.stok }}</span></td>
+                        <td>
+                            <a href="{{ url_for('farmasi.obat_edit', id=obat.id) }}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-plus-circle"></i> Tambah Stok
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-success">
+    <i class="bi bi-check-circle"></i> Semua stok obat dalam kondisi aman!
+</div>
+{% endif %}
+{% endblock %}

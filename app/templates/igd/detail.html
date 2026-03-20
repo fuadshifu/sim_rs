@@ -1,0 +1,110 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail IGD - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-exclamation-triangle"></i> Detail IGD</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Kunjungan IGD</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>No. Register</strong></td>
+                        <td>: {{ igd.id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Waktu Masuk</strong></td>
+                        <td>: {{ igd.waktu_masuk.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Triage</strong></td>
+                        <td>:
+                            {% if igd.triage == 'merah' %}
+                            <span class="badge bg-danger">MERAH</span>
+                            {% elif igd.triage == 'kuning' %}
+                            <span class="badge bg-warning text-dark">KUNING</span>
+                            {% else %}
+                            <span class="badge bg-success">HIJAU</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dokter</strong></td>
+                        <td>: {{ igd.dokter.nama_lengkap if igd.dokter else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Perawat</strong></td>
+                        <td>: {{ igd.perawat.nama_lengkap if igd.perawat else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>:
+                            {% if igd.status == 'aktif' %}
+                            <span class="badge bg-primary">Aktif</span>
+                            {% elif igd.status == 'rawat_inap' %}
+                            <span class="badge bg-info">Rawat Inap</span>
+                            {% elif igd.status == 'pulang' %}
+                            <span class="badge bg-secondary">Pulang</span>
+                            {% else %}
+                            <span class="badge bg-dark">Rujuk</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Pemeriksaan</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Keluhan Utama:</strong> {{ igd.keluhan_utama or '-' }}</p>
+                <p><strong>Diagnosa Awal:</strong> {{ igd.diagnose_awal or '-' }}</p>
+                <p><strong>Tindakan:</strong> {{ igd.tindakan or '-' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ igd.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ igd.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ igd.pasien.jenis_kelamin }} | Gol. Darah: {{ igd.pasien.goldarah or '-' }}</small></p>
+                <p class="mb-0"><small>Tgl Lahir: {{ igd.pasien.tanggal_lahir.strftime('%d-%m-%Y') }}</small></p>
+                <hr>
+                <p class="mb-0"><small class="text-danger">Alergi: {{ igd.pasien.alergiobat or 'Tidak ada' }}</small></p>
+            </div>
+        </div>
+
+        {% if igd.status == 'aktif' %}
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('igd.periksa', id=igd.id) }}" class="btn btn-success">
+                <i class="bi bi-clipboard-check"></i> Periksa
+            </a>
+            <a href="{{ url_for('igd.konversi_rawat_inap', id=igd.id) }}" class="btn btn-primary">
+                <i class="bi bi-bed"></i> Rawat Inap
+            </a>
+            <a href="{{ url_for('igd.pulang', id=igd.id) }}" class="btn btn-secondary">
+                <i class="bi bi-box-arrow-right"></i> Pulangkan
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('igd.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

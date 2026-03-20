@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tambah Jenis Pemeriksaan - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-plus-circle"></i> Tambah Jenis Pemeriksaan</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('laboratorium.jenis_baru') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nama" class="form-label">Nama Pemeriksaan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama" name="nama" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="kode" class="form-label">Kode</label>
+                        <input type="text" class="form-control" id="kode" name="kode" placeholder="Contoh: LAB-001">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="kategori" class="form-label">Kategori</label>
+                        <select class="form-select" id="kategori" name="kategori">
+                            <option value="">Pilih...</option>
+                            <option value="Hematologi">Hematologi</option>
+                            <option value="Kimia Klinik">Kimia Klinik</option>
+                            <option value="Urinalisa">Urinalisa</option>
+                            <option value="Imunologi">Imunologi</option>
+                            <option value="Mikrobiologi">Mikrobiologi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="harga" class="form-label">Harga (Rp)</label>
+                        <input type="number" class="form-control" id="harga" name="harga" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Simpan
+                </button>
+                <a href="{{ url_for('laboratorium.jenis') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

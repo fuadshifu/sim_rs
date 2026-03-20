@@ -1,0 +1,124 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail Invoice - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-receipt"></i> Detail Invoice</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Invoice</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>No. Invoice</strong></td>
+                        <td>: <span class="badge bg-primary">{{ billing.nomor_invoice }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal</strong></td>
+                        <td>: {{ billing.tanggal.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>:
+                            {% if billing.status == 'pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                            {% elif billing.status == 'lunas' %}
+                            <span class="badge bg-success">Lunas</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Batal</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if billing.metode_pembayaran %}
+                    <tr>
+                        <td><strong>Metode Pembayaran</strong></td>
+                        <td>: {{ billing.metode_pembayaran }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Detail Layanan</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Layanan</th>
+                            <th>Deskripsi</th>
+                            <th>Jumlah</th>
+                            <th>Harga</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in billing.details %}
+                        <tr>
+                            <td>{{ detail.layanan }}</td>
+                            <td>{{ detail.deskripsi }}</td>
+                            <td>{{ detail.jumlah }}</td>
+                            <td>Rp {{ "{:,.0f}".format(detail.harga) }}</td>
+                            <td>Rp {{ "{:,.0f}".format(detail.total_harga) }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr class="table-secondary">
+                            <td colspan="4" class="text-end"><strong>Total</strong></td>
+                            <td><strong>Rp {{ "{:,.0f}".format(billing.total) }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ billing.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ billing.pasien.nik }}</small></p>
+                <p class="mb-0"><small>JK: {{ billing.pasien.jenis_kelamin }}</small></p>
+            </div>
+        </div>
+
+        {% if billing.status == 'pending' %}
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('kasir.bayarkan', id=billing.id) }}" class="btn btn-success">
+                <i class="bi bi-cash"></i> Proses Pembayaran
+            </a>
+            <a href="{{ url_for('kasir.batal', id=billing.id) }}" class="btn btn-danger" onclick="return confirm('Yakin ingin membatalkan invoice?')">
+                <i class="bi bi-x-circle"></i> Batalkan
+            </a>
+        </div>
+        {% endif %}
+
+        {% if billing.status == 'lunas' and billing.pembayaran %}
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Pembayaran</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Rp {{ "{:,.0f}".format(billing.pembayaran[0].jumlah_bayar) }}</strong></p>
+                <p class="mb-0"><small>Metode: {{ billing.pembayaran[0].metode }}</small></p>
+                <p class="mb-0"><small>Tgl: {{ billing.pembayaran[0].tanggal.strftime('%d-%m-%Y %H:%M') }}</small></p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('kasir.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

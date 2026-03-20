@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SIM RS{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+                <i class="bi bi-hospital"></i> SIM RS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pasienDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-people"></i> Pasien
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('pasien.index') }}">Data Pasien</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('pasien.baru') }}">Pendaftaran Baru</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('bpjs.sep_list') }}">SEP BPJS</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('rawat_jalan.index') }}"><i class="bi bi-clipboard-pulse"></i> Rawat Jalan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('rawat_inap.index') }}"><i class="bi bi-door-closed"></i> Rawat Inap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('igd.index') }}"><i class="bi bi-exclamation-triangle"></i> IGD</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('rekam_medis.index') }}"><i class="bi bi-file-medical"></i> Rekam Medis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('koding.index') }}"><i class="bi bi-code-square"></i> Koding ICD-10</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="farmasiDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-capsule"></i> Farmasi
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('farmasi.obat') }}">Data Obat</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('farmasi.resep') }}">Resep</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('farmasi.stok_rendah') }}">Stok Rendah</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="labDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-droplet"></i> Lab
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('laboratorium.index') }}">Pemeriksaan Lab</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laboratorium.jenis') }}">Jenis Pemeriksaan</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('kasir.index') }}"><i class="bi bi-cash-coin"></i> Kasir</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="keuanganDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up"></i> Keuangan
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('keuangan.index') }}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('keuangan.laporan') }}">Laporan</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('keuangan.pendapatan') }}">Pendapatan</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('keuangan.piutang') }}">Piutang</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="gudangDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-box-seam"></i> Gudang
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('gudang.index') }}">Inventaris</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('gudang.transaksi') }}">Transaksi</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('gudang.kategori') }}">Kategori</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('gudang.stok_rendah') }}">Stok Rendah</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ current_user.nama_lengkap }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('dashboard.profile') }}">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

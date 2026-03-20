@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Edit Rekam Medis - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-pencil"></i> Edit Rekam Medis</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('rekam_medis.edit', id=rm.id) }}">
+            <h5 class="mb-3">SOAP Note</h5>
+
+            <div class="mb-3">
+                <label for="subjective" class="form-label">S - Subjective</label>
+                <textarea class="form-control" id="subjective" name="subjective" rows="2">{{ rm.subjective or '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="objective" class="form-label">O - Objective</label>
+                <textarea class="form-control" id="objective" name="objective" rows="2">{{ rm.objective or '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="assessment" class="form-label">A - Assessment (Diagnosa)</label>
+                <textarea class="form-control" id="assessment" name="assessment" rows="2">{{ rm.assessment or '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="plan" class="form-label">P - Plan</label>
+                <textarea class="form-control" id="plan" name="plan" rows="2">{{ rm.plan or '' }}</textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Simpan
+                </button>
+                <a href="{{ url_for('rekam_medis.detail', id=rm.id) }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

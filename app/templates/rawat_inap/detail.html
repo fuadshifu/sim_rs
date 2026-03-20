@@ -1,0 +1,104 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail Rawat Inap - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-bed"></i> Detail Rawat Inap</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Rawat Inap</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>No. RM</strong></td>
+                        <td>: {{ rawat_inap.id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal Masuk</strong></td>
+                        <td>: {{ rawat_inap.tanggal_masuk.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kamar</strong></td>
+                        <td>: {{ rawat_inap.kamar.nama }} ({{ rawat_inap.kamar.kelas }})</td>
+                    </tr>
+                    <tr>
+                        <td><strong>No. Tempat Tidur</strong></td>
+                        <td>: {{ rawat_inap.tempat_tidur.nomor if rawat_inap.tempat_tidur else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dokter Penanggung Jawab</strong></td>
+                        <td>: {{ rawat_inap.dokter.nama_lengkap if rawat_inap.dokter else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>:
+                            {% if rawat_inap.status == 'aktif' %}
+                            <span class="badge bg-success">Aktif</span>
+                            {% elif rawat_inap.status == 'keluar' %}
+                            <span class="badge bg-secondary">Keluar</span>
+                            {% else %}
+                            <span class="badge bg-danger">Meninggal</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Diagnosa</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Diagnosa Masuk:</strong> {{ rawat_inap.diagnosa_masuk or '-' }}</p>
+                <p><strong>Diagnosa Utama:</strong> {{ rawat_inap.diagnosa_utama or '-' }}</p>
+            </div>
+        </div>
+
+        {% if rawat_inap.status == 'keluar' %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Keluar</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Tanggal Keluar:</strong> {{ rawat_inap.tanggal_keluar.strftime('%d %B %Y %H:%M') }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ rawat_inap.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ rawat_inap.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ rawat_inap.pasien.jenis_kelamin }} | Gol. Darah: {{ rawat_inap.pasien.goldarah or '-' }}</small></p>
+                <p class="mb-1"><small>Tgl Lahir: {{ rawat_inap.pasien.tanggal_lahir.strftime('%d-%m-%Y') }}</small></p>
+                <hr>
+                <p class="mb-0"><small class="text-danger">Alergi: {{ rawat_inap.pasien.alergiobat or 'Tidak ada' }}</small></p>
+            </div>
+        </div>
+
+        {% if rawat_inap.status == 'aktif' %}
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('rawat_inap.pulang', id=rawat_inap.id) }}" class="btn btn-success">
+                <i class="bi bi-box-arrow-right"></i> Pulangkan Pasien
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('rawat_inap.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

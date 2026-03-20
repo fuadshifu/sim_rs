@@ -1,0 +1,102 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Order Pemeriksaan Lab - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-droplet"></i> Order Pemeriksaan Laboratorium</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('laboratorium.baru') }}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pasien_id" class="form-label">Pasien <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pasien_id" name="pasien_id" required>
+                            <option value="">Pilih Pasien...</option>
+                            {% for pasien in pasien_list %}
+                            <option value="{{ pasien.id }}">{{ pasien.nik }} - {{ pasien.nama_lengkap }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="diagnosa" class="form-label">Diagnosa/Keluhan</label>
+                <textarea class="form-control" id="diagnosa" name="diagnosa" rows="2"></textarea>
+            </div>
+
+            <hr>
+            <h5 class="mb-3">Pemeriksaan yang Diperlukan</h5>
+
+            <div id="pemeriksaan-container">
+                <div class="row mb-3 pemeriksaan-row">
+                    <div class="col-md-10">
+                        <select class="form-select" name="jenis_pemeriksaan_id[]">
+                            <option value="">Pilih Pemeriksaan...</option>
+                            {% for jp in jenis_list %}
+                            <option value="{{ jp.id }}">{{ jp.nama }} ({{ jp.kategori }}) - Rp {{ "{:,.0f}".format(jp.harga) }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger" onclick="removePemeriksaan(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary mb-3" onclick="addPemeriksaan()">
+                <i class="bi bi-plus"></i> Tambah Pemeriksaan
+            </button>
+
+            <div class="mb-3">
+                <label for="catatan" class="form-label">Catatan</label>
+                <textarea class="form-control" id="catatan" name="catatan" rows="2"></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Simpan Order
+                </button>
+                <a href="{{ url_for('laboratorium.index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addPemeriksaan() {
+    const container = document.getElementById('pemeriksaan-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'row mb-3 pemeriksaan-row';
+    newRow.innerHTML = `
+        <div class="col-md-10">
+            <select class="form-select" name="jenis_pemeriksaan_id[]">
+                <option value="">Pilih Pemeriksaan...</option>
+                {% for jp in jenis_list %}
+                <option value="{{ jp.id }}">{{ jp.nama }} ({{ jp.kategori }}) - Rp {{ "{:,.0f}".format(jp.harga) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-danger" onclick="removePemeriksaan(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(newRow);
+}
+
+function removePemeriksaan(btn) {
+    const rows = document.querySelectorAll('.pemeriksaan-row');
+    if (rows.length > 1) {
+        btn.closest('.pemeriksaan-row').remove();
+    }
+}
+</script>
+{% endblock %}

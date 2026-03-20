@@ -1,0 +1,104 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail Rawat Jalan - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-clipboard-pulse"></i> Detail Rawat Jalan</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Informasi Kunjungan</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>No. Antrian</strong></td>
+                        <td>: <span class="badge bg-primary fs-6">{{ rawat_jalan.nomor_antrian }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal</strong></td>
+                        <td>: {{ rawat_jalan.tanggal.strftime('%d %B %Y %H:%M') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Poliklinik</strong></td>
+                        <td>: {{ rawat_jalan.poliklinik.nama if rawat_jalan.poliklinik else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dokter</strong></td>
+                        <td>: {{ rawat_jalan.dokter.nama_lengkap if rawat_jalan.dokter else '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>:
+                            {% if rawat_jalan.status == 'menunggu' %}
+                            <span class="badge bg-warning">Menunggu</span>
+                            {% elif rawat_jalan.status == 'diperiksa' %}
+                            <span class="badge bg-info">Diperiksa</span>
+                            {% else %}
+                            <span class="badge bg-success">Selesai</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Keluhan & Pemeriksaan</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>Keluhan</strong></td>
+                        <td>: {{ rawat_jalan.keluhan or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diagnosa</strong></td>
+                        <td>: {{ rawat_jalan.diagnose or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Terapi</strong></td>
+                        <td>: {{ rawat_jalan.terapi or '-' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ rawat_jalan.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ rawat_jalan.pasien.nik }}</small></p>
+                <p class="mb-1"><small>JK: {{ rawat_jalan.pasien.jenis_kelamin }} | Gol. Darah: {{ rawat_jalan.pasien.goldarah or '-' }}</small></p>
+                <p class="mb-0"><small>Tgl Lahir: {{ rawat_jalan.pasien.tanggal_lahir.strftime('%d-%m-%Y') }}</small></p>
+            </div>
+        </div>
+
+        {% if rawat_jalan.status != 'selesai' %}
+        <div class="d-grid gap-2">
+            {% if rawat_jalan.status == 'menunggu' %}
+            <a href="{{ url_for('rawat_jalan.panggil', id=rawat_jalan.id) }}" class="btn btn-info">
+                <i class="bi bi-bell"></i> Panggil Antrian
+            </a>
+            {% endif %}
+            <a href="{{ url_for('rawat_jalan.periksa', id=rawat_jalan.id) }}" class="btn btn-success">
+                <i class="bi bi-clipboard-check"></i> Periksa Pasien
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('rawat_jalan.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
+{% endblock %}

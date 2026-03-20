@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Pembayaran - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-cash"></i> Proses Pembayaran</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0">Data Pasien</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>{{ billing.pasien.nama_lengkap }}</strong></p>
+                <p class="mb-1"><small>NIK: {{ billing.pasien.nik }}</small></p>
+                <hr>
+                <p class="mb-0 text-end"><strong>Total Tagihan:</strong></p>
+                <h3 class="text-end text-primary">Rp {{ "{:,.0f}".format(billing.total) }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('kasir.bayarkan', id=billing.id) }}">
+                    <div class="mb-3">
+                        <label for="jumlah_bayar" class="form-label">Jumlah Pembayaran <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="jumlah_bayar" name="jumlah_bayar" value="{{ billing.total }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="metode" class="form-label">Metode Pembayaran</label>
+                        <select class="form-select" id="metode" name="metode" required>
+                            <option value="">Pilih...</option>
+                            <option value="Tunai">Tunai</option>
+                            <option value="Debit">Kartu Debit</option>
+                            <option value="Kredit">Kartu Kredit</option>
+                            <option value="Transfer">Transfer Bank</option>
+                            <option value="QRIS">QRIS</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> Setelah pembayaran, status invoice akan berubah menjadi <strong>LUNAS</strong>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Konfirmasi Pembayaran
+                        </button>
+                        <a href="{{ url_for('kasir.detail', id=billing.id) }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

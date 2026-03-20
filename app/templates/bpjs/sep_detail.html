@@ -1,0 +1,111 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Detail SEP - SIM RS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-credit-card"></i> Detail Surat Eligibilitas Peserta (SEP)</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-file-text"></i> SEP - {{ sep.nomor_sep }}</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>Nomor SEP</strong></td>
+                        <td>: <span class="fs-5 text-primary">{{ sep.nomor_sep }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal SEP</strong></td>
+                        <td>: {{ sep.tanggal_sep.strftime('%d %B %Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
+                        <td>: {% if sep.status == 'aktif' %}<span class="badge bg-success">Aktif</span>{% elif sep.status == 'digunakan' %}<span class="badge bg-warning">Digunakan</span>{% else %}<span class="badge bg-secondary">Expired</span>{% endif %}</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <h6>Data Peserta</h6>
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>Nama Pasien</strong></td>
+                        <td>: {{ sep.pasien.nama_lengkap }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NIK</strong></td>
+                        <td>: {{ sep.pasien.nik }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>No. Kartu BPJS</strong></td>
+                        <td>: {{ sep.pasien.no_bpjs }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kelas Rawat</strong></td>
+                        <td>: {{ sep.kelas_rawat or sep.pasien.kelas_bpjs }}</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <h6>Detail Rujukan</h6>
+                <table class="table table-borderless">
+                    <tr>
+                        <td width="25%"><strong>Faskes Asal</strong></td>
+                        <td>: {{ sep.faskes_asal or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>No. Rujukan</strong></td>
+                        <td>: {{ sep.referensi or '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diagnosa ICD-10</strong></td>
+                        <td>: {% if sep.icd10_awal_id %}{{ sep.diagnosa_awal_icd.kode }} - {{ sep.diagnosa_awal_icd.nama }}{% else %}{{ sep.diagnosa_awal or '-' }}{% endif %}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Cetak</h6>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary w-100 mb-2" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Cetak SEP
+                </button>
+                <button class="btn btn-secondary w-100" onclick="copyToClipboard()">
+                    <i class="bi bi-clipboard"></i> Copy Nomor SEP
+                </button>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Aksi</h6>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('bpjs.sep_baru') }}" class="btn btn-success w-100 mb-2">
+                    <i class="bi bi-plus-circle"></i> Buat SEP Baru
+                </a>
+                <a href="{{ url_for('bpjs.sep_list') }}" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    navigator.clipboard.writeText('{{ sep.nomor_sep }}').then(function() {
+        alert('Nomor SEP disalin: {{ sep.nomor_sep }}');
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Rawat Inap - SIM RS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-bed"></i> Rawat Inap</h2>
+    <a href="{{ url_for('rawat_inap.baru') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Admission Baru
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status">
+                    <option value="">Semua Status</option>
+                    <option value="aktif" {% if status == 'aktif' %}selected{% endif %}>Aktif</option>
+                    <option value="keluar" {% if status == 'keluar' %}selected{% endif %}>Keluar</option>
+                    <option value="meninggal" {% if status == 'meninggal' %}selected{% endif %}>Meninggal</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Kelas Kamar</label>
+                <select class="form-select" name="kelas">
+                    <option value="">Semua Kelas</option>
+                    <option value="VIP" {% if kelas == 'VIP' %}selected{% endif %}>VIP</option>
+                    <option value="I" {% if kelas == 'I' %}selected{% endif %}>Kelas I</option>
+                    <option value="II" {% if kelas == 'II' %}selected{% endif %}>Kelas II</option>
+                    <option value="III" {% if kelas == 'III' %}selected{% endif %}>Kelas III</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-filter"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Patient List -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No. RM</th>
+                        <th>Pasien</th>
+                        <th>Kamar</th>
+                        <th>No. TT</th>
+                        <th>Tgl Masuk</th>
+                        <th>Diagnosa Masuk</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ri in rawat_inap_list %}
+                    <tr>
+                        <td>{{ ri.id }}</td>
+                        <td>{{ ri.pasien.nama_lengkap }}</td>
+                        <td>{{ ri.kamar.nama }} ({{ ri.kamar.kelas }})</td>
+                        <td>{{ ri.tempat_tidur.nomor if ri.tempat_tidur else '-' }}</td>
+                        <td>{{ ri.tanggal_masuk.strftime('%d-%m-%Y %H:%M') }}</td>
+                        <td>{{ ri.diagnosa_masuk[:30] }}{% if ri.diagnosa_masuk|length > 30 %}...{% endif %}</td>
+                        <td>
+                            {% if ri.status == 'aktif' %}
+                            <span class="badge bg-success">Aktif</span>
+                            {% elif ri.status == 'keluar' %}
+                            <span class="badge bg-secondary">Keluar</span>
+                            {% else %}
+                            <span class="badge bg-danger">Meninggal</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('rawat_inap.detail', id=ri.id) }}" class="btn btn-sm btn-primary" title="Detail">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if ri.status == 'aktif' %}
+                            <a href="{{ url_for('rawat_inap.pulang', id=ri.id) }}" class="btn btn-sm btn-success" title="Pulangkan">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">Tidak ada pasien rawat inap</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
