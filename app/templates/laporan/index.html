@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Dashboard Laporan - SIM RS{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> Dashboard Laporan</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">RL 1 - Pendaftaran</div>
+            <div class="card-body">
+                <h5 class="card-title">Data Pendaftaran Pasien</h5>
+                <p class="card-text">Laporan pasien baru per bulan</p>
+                <a href="{{ url_for('laporan.rl1') }}" class="btn btn-light">Lihat Laporan</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">RL 2 - Morbiditas</div>
+            <div class="card-body">
+                <h5 class="card-title">10 Besar Penyakit</h5>
+                <p class="card-text">Statistik penyakit terbanyak</p>
+                <a href="{{ url_for('laporan.rl2') }}" class="btn btn-light">Lihat Laporan</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">RL 3 - Kematian</div>
+            <div class="card-body">
+                <h5 class="card-title">Data Kematian</h5>
+                <p class="card-text">Statistik kematian pasien</p>
+                <a href="{{ url_for('laporan.rl3') }}" class="btn btn-light">Lihat Laporan</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">RL 4 - BOR</div>
+            <div class="card-body">
+                <h5 class="card-title">Bed Occupancy Rate</h5>
+                <p class="card-text">Keterisian tempat tidur</p>
+                <a href="{{ url_for('laporan.rl4') }}" class="btn btn-light">Lihat Laporan</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">RL 5 - Pembiayaan</div>
+            <div class="card-body">
+                <h5 class="card-title">Pembiayaan RS</h5>
+                <p class="card-text">Laporan keuangan RS</p>
+                <a href="{{ url_for('laporan.rl5') }}" class="btn btn-light">Lihat Laporan</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">RL 6 - SDM</div>
+            <div class="card-body">
+                <h5 class="card-title">Sumber Daya Manusia</h5>
+                <p class="card-text">Data karyawan RS</p>
+                <a href="{{ url_for('laporan.rl6') }}" class="btn btn-light">Lihat Laporan</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col-12">
+        <h4>Pelaporan Khusus</h4>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">SIRS</h5>
+                <p class="card-text">Sistem Informasi RS</p>
+                <a href="{{ url_for('laporan.sirs') }}" class="btn btn-primary btn-sm">Buka</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">TB</h5>
+                <p class="card-text">Tuberkulosis</p>
+                <a href="{{ url_for('laporan.tb') }}" class="btn btn-primary btn-sm">Buka</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Pneumonia</h5>
+                <p class="card-text">Laporan Pneumonia</p>
+                <a href="{{ url_for('laporan.pneumonia') }}" class="btn btn-primary btn-sm">Buka</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">DBD</h5>
+                <p class="card-text">Demam Berdarah</p>
+                <a href="{{ url_for('laporan.dbd') }}" class="btn btn-primary btn-sm">Buka</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

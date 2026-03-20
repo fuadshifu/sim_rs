@@ -1,0 +1,63 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Tambah Jadwal Dokter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Tambah Jadwal Dokter</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Dokter</label>
+                        <select name="dokter_id" class="form-select" required>
+                            <option value="">Pilih Dokter</option>
+                            {% for d in dokter_list %}
+                            <option value="{{ d.id }}">{{ d.nama_lengkap }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Poliklinik</label>
+                        <select name="poliklinik_id" class="form-select" required>
+                            <option value="">Pilih Poliklinik</option>
+                            {% for p in poliklinik_list %}
+                            <option value="{{ p.id }}">{{ p.nama }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hari</label>
+                        <select name="hari" class="form-select" required>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                            <option value="Sabtu">Sabtu</option>
+                            <option value="Minggu">Minggu</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Mulai</label>
+                        <input type="time" name="jam_mulai" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Selesai</label>
+                        <input type="time" name="jam_selesai" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kapasitas (pasien/hari)</label>
+                        <input type="number" name="kapasitas" class="form-control" value="20">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ url_for('jadwal.dokter_list') }}" class="btn btn-secondary">Kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

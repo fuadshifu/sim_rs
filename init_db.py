@@ -4,7 +4,7 @@ Menambahkan roles dan user admin default
 """
 
 from app import create_app, db, bcrypt
-from app.models import Role, User, Poliklinik, Kamar, TempatTidur, Obat, ICD10
+from app.models import Role, User, Poliklinik, Kamar, TempatTidur, Obat, ICD10, ICD9, INACBGs
 
 def init_db():
     app = create_app('development')
@@ -304,6 +304,164 @@ def init_db():
 
         db.session.commit()
 
+        # Create Sample ICD-9 Codes (Tindakan Medis)
+        icd9_list = [
+            # Tindakan Umum
+            ICD9(kode='00.01', nama='Transfusi darah', kategori='tindakan'),
+            ICD9(kode='00.02', nama='Pemberian obat intravena', kategori='tindakan'),
+            ICD9(kode='00.09', nama='Pemberian terapi IV lain', kategori='tindakan'),
+
+            # Tindakan Diagnostik
+            ICD9(kode='87.03', nama='Rontgen Thorax', kategori='diagnostik'),
+            ICD9(kode='87.36', nama='IVP (Intravenous Pyelogram)', kategori='diagnostik'),
+            ICD9(kode='87.41', nama='Mammografi', kategori='diagnostik'),
+            ICD9(kode='88.01', nama='CT Scan Kepala', kategori='diagnostik'),
+            ICD9(kode='88.38', nama='CT Scan Whole Body', kategori='diagnostik'),
+            ICD9(kode='88.76', nama='USG Abdomen', kategori='diagnostik'),
+            ICD9(kode='88.78', nama='USG Obstetri', kategori='diagnostik'),
+
+            # Tindakan Bedah
+            ICD9(kode='06.2', nama='Tiroidektomi partial', kategori='bedah'),
+            ICD9(kode='06.3', nama='Tiroidektomi total', kategori='bedah'),
+            ICD9(kode='36.1', nama='CABG (Bypass Jantung)', kategori='bedah'),
+            ICD9(kode='38.12', nama='Endarterektomi karotid', kategori='bedah'),
+            ICD9(kode='38.44', nama='Bypass Aorto-femoral', kategori='bedah'),
+            ICD9(kode='45.41', nama='Polipektomi Colon', kategori='bedah'),
+            ICD9(kode='45.49', nama='Bedah Colon lain', kategori='bedah'),
+            ICD9(kode='51.22', nama='Kolesistektomi Laparoskopi', kategori='bedah'),
+            ICD9(kode='51.23', nama='Kolesistektomi Open', kategori='bedah'),
+            ICD9(kode='52.51', nama='Pankreatektomi distal', kategori='bedah'),
+            ICD9(kode='52.80', nama='Whipple Procedure', kategori='bedah'),
+            ICD9(kode='53.00', nama='Herniorapi ventral', kategori='bedah'),
+            ICD9(kode='53.11', nama='Herniorapi inguinal', kategori='bedah'),
+            ICD9(kode='53.41', nama='Herniorapi femoral', kategori='bedah'),
+            ICD9(kode='54.11', nama='Laparotomi Eksplorasi', kategori='bedah'),
+            ICD9(kode='54.21', nama='Laparoskopi Diagnostik', kategori='bedah'),
+            ICD9(kode='70.4', nama='Histerektomi Abdominal', kategori='bedah'),
+            ICD9(kode='70.51', nama='Vaginal Hysterectomy', kategori='bedah'),
+            ICD9(kode='71.3', nama='Mastektomi radikal', kategori='bedah'),
+            ICD9(kode='71.5', nama='Mastektomi simple', kategori='bedah'),
+            ICD9(kode='78.50', nama='Fiksasi internal tulang lain', kategori='bedah'),
+            ICD9(kode='79.00', nama='Reduksi tertutup fraktur', kategori='bedah'),
+            ICD9(kode='79.10', nama='Reduksi terbuka fraktur', kategori='bedah'),
+            ICD9(kode='79.30', nama='Open reduction fracture', kategori='bedah'),
+            ICD9(kode='81.00', nama='Artroplasti Total Pinggul', kategori='bedah'),
+            ICD9(kode='81.02', nama='Artroplasti Partial Pinggul', kategori='bedah'),
+            ICD9(kode='81.40', nama='Artroplasti Total Lutut', kategori='bedah'),
+            ICD9(kode='81.80', nama='Rekonstruksi ACL', kategori='bedah'),
+            ICD9(kode='82.21', nama='Carpal Tunnel Release', kategori='bedah'),
+            ICD9(kode='82.41', nama='Debridement tendon', kategori='bedah'),
+            ICD9(kode='83.09', nama='Lainnya insisi fascia', kategori='bedah'),
+            ICD9(kode='83.13', nama='Tenotomi', kategori='bedah'),
+            ICD9(kode='86.3', nama='Excision skin lesion', kategori='bedah'),
+            ICD9(kode='86.4', nama='Debridement luka', kategori='bedah'),
+            ICD9(kode='86.60', nama='Skin graft free', kategori='bedah'),
+            ICD9(kode='86.69', nama='Skin graft lain', kategori='bedah'),
+            ICD9(kode='86.70', nama='Flap kulit', kategori='bedah'),
+            ICD9(kode='86.84', nama='Sutur luka besar', kategori='bedah'),
+            ICD9(kode='93.11', nama='Fisioterapi', kategori='tindakan'),
+            ICD9(kode='93.24', nama='Terapi okupasi', kategori='tindakan'),
+            ICD9(kode='93.38', nama='Latihan range of motion', kategori='tindakan'),
+            ICD9(kode='93.90', nama='CPAP therapy', kategori='tindakan'),
+            ICD9(kode='94.62', nama='Detoksifikasi alkohol', kategori='tindakan'),
+            ICD9(kode='96.04', nama='Intubasi endotrakeal', kategori='tindakan'),
+            ICD9(kode='96.06', nama='Nasogastric tube', kategori='tindakan'),
+            ICD9(kode='96.07', nama='Kateterisasi urin', kategori='tindakan'),
+            ICD9(kode='96.71', nama='Ventilasi mekanik', kategori='tindakan'),
+            ICD9(kode='97.05', nama='Penggantian kateter', kategori='tindakan'),
+            ICD9(kode='97.15', nama='Lavage gastric', kategori='tindakan'),
+        ]
+
+        for icd9 in icd9_list:
+            db.session.add(icd9)
+
+        db.session.commit()
+
+        # Create Sample INA-CBGs Codes
+        inacbgs_list = [
+            # Bedah Umum
+            INACBGs(kode_cbg='A-1-1', nama_cbg='Appendektomi', tarif=3500000, kategori='bedah', sub_kategori='Abdomen'),
+            INACBGs(kode_cbg='A-1-2', nama_cbg='Kolesistektomi Laparoskopi', tarif=5500000, kategori='bedah', sub_kategori='Abdomen'),
+            INACBGs(kode_cbg='A-1-3', nama_cbg='Herniorapi Inguinal', tarif=2800000, kategori='bedah', sub_kategori='Hernia'),
+            INACBGs(kode_cbg='A-1-4', nama_cbg='Hemoroidectomy', tarif=2200000, kategori='bedah', sub_kategori='Anorektal'),
+            INACBGs(kode_cbg='A-1-5', nama_cbg='Tiroidektomi', tarif=4500000, kategori='bedah', sub_kategori='Endokrin'),
+
+            # Bedah Ortopedi
+            INACBGs(kode_cbg='B-1-1', nama_cbg='Artroplasti Total Pggul', tarif=25000000, kategori='bedah', sub_kategori='Ortopedi'),
+            INACBGs(kode_cbg='B-1-2', nama_cbg='Artroplasti Total Lutut', tarif=22000000, kategori='bedah', sub_kategori='Ortopedi'),
+            INACBGs(kode_cbg='B-1-3', nama_cbg='Open Reduction Internal Fixation', tarif=8500000, kategori='bedah', sub_kategori='Ortopedi'),
+            INACBGs(kode_cbg='B-1-4', nama_cbg='Spinal Fusion', tarif=18000000, kategori='bedah', sub_kategori='Ortopedi'),
+            INACBGs(kode_cbg='B-1-5', nama_cbg='Amputasi', tarif=4500000, kategori='bedah', sub_kategori='Ortopedi'),
+
+            # Bedah Syaraf
+            INACBGs(kode_cbg='C-1-1', nama_cbg='Kraniotomi', tarif=15000000, kategori='bedah', sub_kategori='Saraf'),
+            INACBGs(kode_cbg='C-1-2', nama_cbg='Cranioplasty', tarif=8500000, kategori='bedah', sub_kategori='Saraf'),
+            INACBGs(kode_cbg='C-1-3', nama_cbg='Ventriculostomy', tarif=6500000, kategori='bedah', sub_kategori='Saraf'),
+            INACBGs(kode_cbg='C-1-4', nama_cbg='Laminektomi', tarif=9500000, kategori='bedah', sub_kategori='Saraf'),
+
+            # Bedah Jantung
+            INACBGs(kode_cbg='D-1-1', nama_cbg='CABG', tarif=35000000, kategori='bedah', sub_kategori='Jantung'),
+            INACBGs(kode_cbg='D-1-2', nama_cbg='Valve Replacement', tarif=40000000, kategori='bedah', sub_kategori='Jantung'),
+            INACBGs(kode_cbg='D-1-3', nama_cbg='Pacemaker Insertion', tarif=12000000, kategori='bedah', sub_kategori='Jantung'),
+            INACBGs(kode_cbg='D-1-4', nama_cbg='Angioplasty', tarif=15000000, kategori='bedah', sub_kategori='Jantung'),
+
+            # Bedah Mulut/Mata/THT
+            INACBGs(kode_cbg='E-1-1', nama_cbg='Mastektomi', tarif=6500000, kategori='bedah', sub_kategori='Breast'),
+            INACBGs(kode_cbg='E-1-2', nama_cbg='Lumpektomi', tarif=4500000, kategori='bedah', sub_kategori='Breast'),
+            INACBGs(kode_cbg='E-1-3', nama_cbg='Thyroidectomy', tarif=5500000, kategori='bedah', sub_kategori='Endokrin'),
+
+            # Non-Bedah Internis
+            INACBGs(kode_cbg='F-1-1', nama_cbg='Pneumonia Biasa', tarif=2500000, kategori='non-bedah', sub_kategori='Paru'),
+            INACBGs(kode_cbg='F-1-2', nama_cbg='Pneumonia Berat', tarif=4500000, kategori='non-bedah', sub_kategori='Paru'),
+            INACBGs(kode_cbg='F-1-3', nama_cbg='Asma Bronkial', tarif=2000000, kategori='non-bedah', sub_kategori='Paru'),
+            INACBGs(kode_cbg='F-1-4', nama_cbg='TB Paru', tarif=1800000, kategori='non-bedah', sub_kategori='Paru'),
+
+            # Non-Bedah Jantung
+            INACBGs(kode_cbg='G-1-1', nama_cbg='CHF (Gagal Jantung)', tarif=3500000, kategori='non-bedah', sub_kategori='Jantung'),
+            INACBGs(kode_cbg='G-1-2', nama_cbg='Hipertensi Berat', tarif=2200000, kategori='non-bedah', sub_kategori='Jantung'),
+            INACBGs(kode_cbg='G-1-3', nama_cbg='Aritmia', tarif=2800000, kategori='non-bedah', sub_kategori='Jantung'),
+            INACBGs(kode_cbg='G-1-4', nama_cbg='Infark Miokard', tarif=4500000, kategori='non-bedah', sub_kategori='Jantung'),
+
+            # Non-Bedah Neurologi
+            INACBGs(kode_cbg='H-1-1', nama_cbg='Stroke Iskemik', tarif=4500000, kategori='non-bedah', sub_kategori='Saraf'),
+            INACBGs(kode_cbg='H-1-2', nama_cbg='Stroke Hemoragik', tarif=5500000, kategori='non-bedah', sub_kategori='Saraf'),
+            INACBGs(kode_cbg='H-1-3', nama_cbg='Meningitis', tarif=3500000, kategori='non-bedah', sub_kategori='Saraf'),
+            INACBGs(kode_cbg='H-1-4', nama_cbg='Epilepsi', tarif=2000000, kategori='non-bedah', sub_kategori='Saraf'),
+
+            # Non-Bedah GIT
+            INACBGs(kode_cbg='I-1-1', nama_cbg='Diare Dehidrasi', tarif=1500000, kategori='non-bedah', sub_kategori='GIT'),
+            INACBGs(kode_cbg='I-1-2', nama_cbg='Perdarahan GIT', tarif=3500000, kategori='non-bedah', sub_kategori='GIT'),
+            INACBGs(kode_cbg='I-1-3', nama_cbg='Sirosis Hati', tarif=2800000, kategori='non-bedah', sub_kategori='GIT'),
+            INACBGs(kode_cbg='I-1-4', nama_cbg='Pankreatitis Akut', tarif=4000000, kategori='non-bedah', sub_kategori='GIT'),
+
+            # Non-Bedah Ginjal
+            INACBGs(kode_cbg='J-1-1', nama_cbg='Gagal Ginjal Kronik', tarif=3500000, kategori='non-bedah', sub_kategori='Ginjal'),
+            INACBGs(kode_cbg='J-1-2', nama_cbg='ISK (Infeksi Saluran Kemih)', tarif=1800000, kategori='non-bedah', sub_kategori='Ginjal'),
+            INACBGs(kode_cbg='J-1-3', nama_cbg='Nefrolitiasis', tarif=2200000, kategori='non-bedah', sub_kategori='Ginjal'),
+
+            # Kandungan
+            INACBGs(kode_cbg='K-1-1', nama_cbg='Persalinan Normal', tarif=1500000, kategori='ibu', sub_kategori='Persalinan'),
+            INACBGs(kode_cbg='K-1-2', nama_cbg='SC (Sectio Caesarea)', tarif=3500000, kategori='ibu', sub_kategori='Persalinan'),
+            INACBGs(kode_cbg='K-1-3', nama_cbg='Abortus Incomplete', tarif=1200000, kategori='ibu', sub_kategori='Abortus'),
+            INACBGs(kode_cbg='K-1-4', nama_cbg='Kuretase', tarif=1000000, kategori='ibu', sub_kategori='Kandungan'),
+
+            # Neonatus
+            INACBGs(kode_cbg='L-1-1', nama_cbg='BBLR (Bawah 2500g)', tarif=3500000, kategori='neonatus', sub_kategori='Perawatan'),
+            INACBGs(kode_cbg='L-1-2', nama_cbg='Asfiksia Neonatorum', tarif=2800000, kategori='neonatus', sub_kategori='Perawatan'),
+            INACBGs(kode_cbg='L-1-3', nama_cbg='Jaundice Neonatorum', tarif=1800000, kategori='neonatus', sub_kategori='Perawatan'),
+
+            # Anak
+            INACBGs(kode_cbg='M-1-1', nama_cbg='Pneumonia Anak', tarif=2000000, kategori='non-bedah', sub_kategori='Anak'),
+            INACBGs(kode_cbg='M-1-2', nama_cbg='Demam Berdarah Dengue', tarif=2800000, kategori='non-bedah', sub_kategori='Anak'),
+            INACBGs(kode_cbg='M-1-3', nama_cbg='Diare Anak Dehidrasi', tarif=1500000, kategori='non-bedah', sub_kategori='Anak'),
+            INACBGs(kode_cbg='M-1-4', nama_cbg='Meningitis Anak', tarif=3500000, kategori='non-bedah', sub_kategori='Anak'),
+        ]
+
+        for inac in inacbgs_list:
+            db.session.add(inac)
+
+        db.session.commit()
+
         print('Database berhasil diinisialisasi!')
         print('=' * 50)
         print('Admin User:')
@@ -316,6 +474,8 @@ def init_db():
         print(f'  - {sum(len(n) for n in tt_data)} Tempat Tidur')
         print(f'  - {len(obat_list)} Obat')
         print(f'  - {len(icd10_list)} Kode ICD-10')
+        print(f'  - {len(icd9_list)} Kode ICD-9')
+        print(f'  - {len(inacbgs_list)} Kode INA-CBGs')
 
 if __name__ == '__main__':
     init_db()

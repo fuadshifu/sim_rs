@@ -36,6 +36,8 @@ def create_app(config_name='default'):
     from app.routes.gudang import gudang_bp
     from app.routes.koding import koding_bp
     from app.routes.bpjs import bpjs_bp
+    from app.routes.laporan import laporan_bp
+    from app.routes.jadwal import jadwal_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
@@ -52,6 +54,8 @@ def create_app(config_name='default'):
     app.register_blueprint(gudang_bp)
     app.register_blueprint(koding_bp)
     app.register_blueprint(bpjs_bp)
+    app.register_blueprint(laporan_bp)
+    app.register_blueprint(jadwal_bp)
 
     # Create tables
     with app.app_context():

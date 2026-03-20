@@ -32,8 +32,6 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('pasien.index') }}">Data Pasien</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('pasien.baru') }}">Pendaftaran Baru</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('bpjs.sep_list') }}">SEP BPJS</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -45,11 +43,58 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('igd.index') }}"><i class="bi bi-exclamation-triangle"></i> IGD</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('rekam_medis.index') }}"><i class="bi bi-file-medical"></i> Rekam Medis</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="rmDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-file-medical"></i> Rekam Medis
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('rekam_medis.index') }}">SOAP Note</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('rekam_medis.surat_sakit_list') }}">Surat Sakit</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('rekam_medis.consent_list') }}">Consent</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="kodingDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-code-square"></i> Koding
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('koding.index') }}">ICD-10 (Diagnosa)</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('koding.icd9_list') }}">ICD-9 (Tindakan)</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('koding.inacbgs_list') }}">INA-CBGs</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="bpjsDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-shield-check"></i> BPJS
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('bpjs.sep_list') }}">SEP</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('bpjs.rujukan_list') }}">Rujukan</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('bpjs.klaim_list') }}">Klaim</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('koding.index') }}"><i class="bi bi-code-square"></i> Koding ICD-10</a>
+                        <a class="nav-link" href="{{ url_for('jadwal.dokter_list') }}"><i class="bi bi-calendar-check"></i> Jadwal</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-file-earmark-text"></i> Laporan
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.index') }}">Dashboard Laporan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.rl1') }}">RL 1 - Pendaftaran</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.rl2') }}">RL 2 - Morbiditas</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.rl3') }}">RL 3 - Kematian</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.rl4') }}">RL 4 - BOR</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.rl5') }}">RL 5 - Pembiayaan</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.rl6') }}">RL 6 - SDM</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.sirs') }}">SIRS</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.tb') }}">TB</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.pneumonia') }}">Pneumonia</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('laporan.dbd') }}">DBD</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="farmasiDropdown" role="button" data-bs-toggle="dropdown">

@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Edit Jadwal Dokter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Edit Jadwal Dokter</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Dokter</label>
+                        <select name="dokter_id" class="form-select" required>
+                            {% for d in dokter_list %}
+                            <option value="{{ d.id }}" {% if d.id == jadwal.dokter_id %}selected{% endif %}>{{ d.nama_lengkap }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Poliklinik</label>
+                        <select name="poliklinik_id" class="form-select" required>
+                            {% for p in poliklinik_list %}
+                            <option value="{{ p.id }}" {% if p.id == jadwal.poliklinik_id %}selected{% endif %}>{{ p.nama }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hari</label>
+                        <select name="hari" class="form-select" required>
+                            <option value="Senin" {% if jadwal.hari == 'Senin' %}selected{% endif %}>Senin</option>
+                            <option value="Selasa" {% if jadwal.hari == 'Selasa' %}selected{% endif %}>Selasa</option>
+                            <option value="Rabu" {% if jadwal.hari == 'Rabu' %}selected{% endif %}>Rabu</option>
+                            <option value="Kamis" {% if jadwal.hari == 'Kamis' %}selected{% endif %}>Kamis</option>
+                            <option value="Jumat" {% if jadwal.hari == 'Jumat' %}selected{% endif %}>Jumat</option>
+                            <option value="Sabtu" {% if jadwal.hari == 'Sabtu' %}selected{% endif %}>Sabtu</option>
+                            <option value="Minggu" {% if jadwal.hari == 'Minggu' %}selected{% endif %}>Minggu</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Mulai</label>
+                        <input type="time" name="jam_mulai" class="form-control" value="{{ jadwal.jam_mulai.strftime('%H:%M') if jadwal.jam_mulai else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jam Selesai</label>
+                        <input type="time" name="jam_selesai" class="form-control" value="{{ jadwal.jam_selesai.strftime('%H:%M') if jadwal.jam_selesai else '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kapasitas</label>
+                        <input type="number" name="kapasitas" class="form-control" value="{{ jadwal.kapasitas }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ url_for('jadwal.dokter_list') }}" class="btn btn-secondary">Kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

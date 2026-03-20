@@ -1,0 +1,81 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}RL 4 - BOR{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-file-earmark-text"></i> RL 4 - Bed Occupancy Rate</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="GET" class="d-flex">
+            <select name="bulan" class="form-select me-2">
+                {% for m in range(1, 13) %}
+                <option value="{{ m }}" {% if m == bulan %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+            <select name="tahun" class="form-select me-2">
+                {% for y in range(2020, 2030) %}
+                <option value="{{ y }}" {% if y == tahun %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Indikator</th>
+                    <th>Nilai</th>
+                    <th>Satuan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jumlah Tempat Tidur</td>
+                    <td><strong>{{ total_tt }}</strong></td>
+                    <td>TT</td>
+                </tr>
+                <tr>
+                    <td>Hari Perawatan</td>
+                    <td><strong>{{ hari_dalam_bulan }}</strong></td>
+                    <td>Hari</td>
+                </tr>
+                <tr>
+                    <td>Rata-rata Pasien/hari</td>
+                    <td><strong>{{ rata_pasien }}</strong></td>
+                    <td>Pasien</td>
+                </tr>
+                <tr class="table-primary">
+                    <td><strong>BOR</strong></td>
+                    <td><strong>{{ bor }}%</strong></td>
+                    <td>Target: 60-80%</td>
+                </tr>
+                <tr>
+                    <td>LOS (Length of Stay)</td>
+                    <td><strong>{{ los }}</strong></td>
+                    <td>Hari</td>
+                </tr>
+                <tr>
+                    <td>TOI (Turn Over Interval)</td>
+                    <td><strong>{{ toi }}</strong></td>
+                    <td>Hari</td>
+                </tr>
+                <tr>
+                    <td>BTO (Bed Turn Over)</td>
+                    <td><strong>{{ bto }}</strong></td>
+                    <td>Kali</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

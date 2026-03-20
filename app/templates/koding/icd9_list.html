@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}ICD-9 CM (Tindakan){% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-code-square"></i> ICD-9 CM (Kode Tindakan)</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('koding.icd9_baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Tambah Kode
+        </a>
+        <a href="{{ url_for('koding.index') }}" class="btn btn-secondary">
+            ICD-10 (Diagnosa)
+        </a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form method="GET" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Cari kode atau nama..." value="{{ search }}">
+            <button type="submit" class="btn btn-primary">Cari</button>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Kategori</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for icd9 in icd9_list %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><strong>{{ icd9.kode }}</strong></td>
+                <td>{{ icd9.nama }}</td>
+                <td>{{ icd9.kategori }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">Belum ada kode ICD-9</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

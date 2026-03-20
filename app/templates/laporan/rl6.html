@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}RL 6 - SDM{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-file-earmark-text"></i> RL 6 - Sumber Daya Manusia</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>No</th>
+                    <th>Jenis SDM</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sdm in sdm_data %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ sdm.description }}</td>
+                    <td><strong>{{ sdm.jumlah }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-primary">
+                    <th colspan="2">Total SDM</th>
+                    <th><strong>{{ total_sdm }}</strong></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

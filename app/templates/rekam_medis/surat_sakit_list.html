@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Surat Keterangan Sakit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-file-medical"></i> Surat Keterangan Sakit</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('rekam_medis.surat_sakit_baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Buat Surat
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Pasien</th>
+                <th>Tanggal Surat</th>
+                <th>Diagnosa</th>
+                <th>Lama</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in surat_list %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s.pasien.nama_lengkap if s.pasien else '-' }}</td>
+                <td>{{ s.tanggal_surat.strftime('%d-%m-%Y') if s.tanggal_surat else '-' }}</td>
+                <td>{{ s.diagnosa[:50] }}...</td>
+                <td>{{ s.lama_sakit }} hari</td>
+                <td>
+                    <span class="badge bg-{{ 'success' if s.status == 'aktif' else 'secondary' }}">{{ s.status }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('rekam_medis.surat_sakit_detail', id=s.id) }}" class="btn btn-sm btn-info">Detail</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Belum ada surat sakit</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

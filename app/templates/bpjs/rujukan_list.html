@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Rujukan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-shield-check"></i> Rujukan BPJS</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('bpjs.rujukan_baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Buat Rujukan
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>No. Rujukan</th>
+                <th>Pasien</th>
+                <th>Tanggal</th>
+                <th>Faskes Tujuan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rujukan_list %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ r.nomor_rujukan }}</td>
+                <td>{{ r.pasien.nama_lengkap if r.pasien else '-' }}</td>
+                <td>{{ r.tanggal_rujukan.strftime('%d-%m-%Y') if r.tanggal_rujukan else '-' }}</td>
+                <td>{{ r.faskes_tujuan }}</td>
+                <td>
+                    <span class="badge bg-{{ 'success' if r.status == 'aktif' else 'secondary' }}">{{ r.status }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('bpjs.rujukan_detail', id=r.id) }}" class="btn btn-sm btn-info">Detail</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Belum ada rujukan</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

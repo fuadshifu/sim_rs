@@ -444,3 +444,178 @@ class SEP(db.Model):
 
     def __repr__(self):
         return f'<SEP {self.nomor_sep}>'
+
+# ========== RUJUKAN (REFERAL) ==========
+class Rujukan(db.Model):
+    __tablename__ = 'rujukan'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    sep_id = db.Column(db.Integer, db.ForeignKey('sep.id'))
+    nomor_rujukan = db.Column(db.String(30), unique=True)
+    tanggal_rujukan = db.Column(db.DateTime, default=datetime.utcnow)
+    faskes_tujuan = db.Column(db.String(150))  # RS tujuan
+    faskes_asal = db.Column(db.String(150))  # Dari faskes mana
+    diagnosa = db.Column(db.String(250))
+    icd10_id = db.Column(db.Integer, db.ForeignKey('icd10.id'))
+    catatan = db.Column(db.Text)
+    status = db.Column(db.String(20), default='aktif')  # aktif, digunakan, expired, batal
+    jenis_rujukan = db.Column(db.String(20), default='keluar')  # masuk/keluar
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    pasien = db.relationship('Pasien', backref='rujukan')
+    sep = db.relationship('SEP', backref='rujukan')
+    icd10 = db.relationship('ICD10', backref='rujukan')
+
+    def __repr__(self):
+        return f'<Rujukan {self.nomor_rujukan}>'
+
+# ========== KLAIM BPJS ==========
+class Klaim(db.Model):
+    __tablename__ = 'klaim'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nomor_klaim = db.Column(db.String(30), unique=True)
+    periode_awal = db.Column(db.Date)
+    periode_akhir = db.Column(db.Date)
+    total_tarif = db.Column(db.Numeric(15, 2), default=0)
+    status_klaim = db.Column(db.String(20), default='draft')  # draft, submitted, verifikasi, paid, rejected
+    tanggal_submit = db.Column(db.DateTime)
+    tanggal_bayar = db.Column(db.DateTime)
+    catatan = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Klaim {self.nomor_klaim}>'
+
+class KlaimDetail(db.Model):
+    __tablename__ = 'klaim_detail'
+
+    id = db.Column(db.Integer, primary_key=True)
+    klaim_id = db.Column(db.Integer, db.ForeignKey('klaim.id'), nullable=False)
+    sep_id = db.Column(db.Integer, db.ForeignKey('sep.id'))
+    diagnose = db.Column(db.String(250))
+    icd10_id = db.Column(db.Integer, db.ForeignKey('icd10.id'))
+    prosedur = db.Column(db.String(250))
+    icd9_id = db.Column(db.Integer)
+    tarif = db.Column(db.Numeric(15, 2), default=0)
+
+    klaim = db.relationship('Klaim', backref='details')
+    sep = db.relationship('SEP', backref='klaim_details')
+    icd10 = db.relationship('ICD10', backref='klaim_details')
+
+    def __repr__(self):
+        return f'<KlaimDetail {self.id}>'
+
+# ========== INA-CBGs (KODE TARIF BPJS) ==========
+class INACBGs(db.Model):
+    __tablename__ = 'inacbgs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    kode_cbg = db.Column(db.String(20), unique=True, nullable=False)
+    nama_cbg = db.Column(db.String(250), nullable=False)
+    tarif = db.Column(db.Numeric(15, 2), default=0)
+    kategori = db.Column(db.String(50))  # bedah, non-bedah, k煽ong, ibu
+    sub_kategori = db.Column(db.String(50))
+    aktif = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f'<INACBGs {self.kode_cbg}>'
+
+# ========== ICD-9 CM (KODE TINDAKAN) ==========
+class ICD9(db.Model):
+    __tablename__ = 'icd9'
+
+    id = db.Column(db.Integer, primary_key=True)
+    kode = db.Column(db.String(10), unique=True, nullable=False)
+    nama = db.Column(db.String(250), nullable=False)
+    kategori = db.Column(db.String(50))  # tindakan, operasi, diagnostik
+    aktif = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f'<ICD9 {self.kode}>'
+
+# ========== RESUME MEDIS ==========
+class ResumeMedis(db.Model):
+    __tablename__ = 'resume_medis'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    layanan_jenis = db.Column(db.String(20))  # rawat_inap, igd
+    layanan_id = db.Column(db.Integer)
+    tanggal_masuk = db.Column(db.Date)
+    tanggal_keluar = db.Column(db.Date)
+    diagnosa_utama = db.Column(db.Text)
+    diagnosa_sekunder = db.Column(db.Text)
+    prosedur = db.Column(db.Text)
+    icd9_ids = db.Column(db.String(100))  # Comma-separated ICD-9 IDs
+    kondisi_keluar = db.Column(db.String(30))  # sembuh, pulang, rujuk, meninggal
+    obat_pulang = db.Column(db.Text)
+    kontrol_ulang = db.Column(db.Text)
+    dokter_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    pasien = db.relationship('Pasien', backref='resume_medis')
+    dokter = db.relationship('User', backref='resume_medis')
+
+    def __repr__(self):
+        return f'<ResumeMedis {self.id} - {self.pasien_id}>'
+
+# ========== SURAT KETERANGAN SAKIT ==========
+class SuratSakit(db.Model):
+    __tablename__ = 'surat_sakit'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    tanggal_surat = db.Column(db.Date, default=datetime.utcnow().date())
+    diagnosa = db.Column(db.Text)
+    lama_sakit = db.Column(db.Integer)  # hari
+    mulai_tanggal = db.Column(db.Date)
+    sampai_tanggal = db.Column(db.Date)
+    dokter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    catatan = db.Column(db.Text)
+    status = db.Column(db.String(20), default='aktif')  # aktif, used
+
+    pasien = db.relationship('Pasien', backref='surat_sakit')
+    dokter = db.relationship('User', backref='surat_sakit')
+
+    def __repr__(self):
+        return f'<SuratSakit {self.id}>'
+
+# ========== CONSENT (SETUJU TINDAKAN) ==========
+class Consent(db.Model):
+    __tablename__ = 'consent'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    tindakan = db.Column(db.String(200), nullable=False)
+    tanggal_consent = db.Column(db.DateTime, default=datetime.utcnow)
+    dokter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(20), default='granted')  # granted, denied, revoked
+    catatan = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    pasien = db.relationship('Pasien', backref='consent')
+    dokter = db.relationship('User', backref='consent')
+
+    def __repr__(self):
+        return f'<Consent {self.id}>'
+
+# ========== JADWAL DOKTER ==========
+class JadwalDokter(db.Model):
+    __tablename__ = 'jadwal_dokter'
+
+    id = db.Column(db.Integer, primary_key=True)
+    dokter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    poliklinik_id = db.Column(db.Integer, db.ForeignKey('poliklinik.id'), nullable=False)
+    hari = db.Column(db.String(20), nullable=False)  # Senin, Selasa, etc
+    jam_mulai = db.Column(db.Time)
+    jam_selesai = db.Column(db.Time)
+    kapasitas = db.Column(db.Integer, default=20)  # max pasien/hari
+    aktif = db.Column(db.Boolean, default=True)
+
+    dokter = db.relationship('User', backref='jadwal_dokter')
+    poliklinik = db.relationship('Poliklinik', backref='jadwal_dokter')
+
+    def __repr__(self):
+        return f'<JadwalDokter {self.dokter_id} - {self.hari}>'

@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}SIRS{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-file-earmark-text"></i> Laporan SIRS</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <form method="GET" class="d-flex">
+            <select name="tahun" class="form-select">
+                {% for y in range(2020, 2030) %}
+                <option value="{{ y }}" {% if y == tahun %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary ms-2">Filter</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Indikator</th>
+                    <th>Nilai</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pasien Keluar</td>
+                    <td><strong>{{ pasien_keluar }}</strong></td>
+                </tr>
+                <tr>
+                    <td>Pasien Mati</td>
+                    <td><strong>{{ pasien_mati }}</strong></td>
+                </tr>
+                <tr>
+                    <td>BOR Rata-rata</td>
+                    <td><strong>{{ bor }}%</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

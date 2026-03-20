@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Buat Rujukan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Buat Rujukan Baru</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Pasien</label>
+                        <select name="pasien_id" class="form-select" required>
+                            <option value="">Pilih Pasien</option>
+                            {% for p in pasien_list %}
+                            <option value="{{ p.id }}">{{ p.nama_lengkap }} ({{ p.nik }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">SEP (Opsional)</label>
+                        <select name="sep_id" class="form-select">
+                            <option value="">Pilih SEP</option>
+                            {% for s in sep_list %}
+                            <option value="{{ s.id }}">{{ s.nomor_sep }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jenis Rujukan</label>
+                        <select name="jenis_rujukan" class="form-select">
+                            <option value="keluar">Keluar (Rujuk ke RS lain)</option>
+                            <option value="masuk">Masuk (Dari faskes lain)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Faskes Tujuan</label>
+                        <input type="text" name="faskes_tujuan" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Faskes Asal</label>
+                        <input type="text" name="faskes_asal" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Diagnosa</label>
+                        <input type="text" name="diagnosa" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Catatan</label>
+                        <textarea name="catatan" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ url_for('bpjs.rujukan_list') }}" class="btn btn-secondary">Kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Klaim BPJS{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-shield-check"></i> Klaim BPJS</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('bpjs.klaim_baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Buat Klaim
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>No. Klaim</th>
+                <th>Periode</th>
+                <th>Total Tarif</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for k in klaim_list %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ k.nomor_klaim }}</td>
+                <td>{{ k.periode_awal.strftime('%d-%m-%Y') if k.periode_awal else '-' }} - {{ k.periode_akhir.strftime('%d-%m-%Y') if k.periode_akhir else '-' }}</td>
+                <td>Rp {{ "{:,.0f}".format(k.total_tarif or 0) }}</td>
+                <td>
+                    {% if k.status_klaim == 'draft' %}
+                    <span class="badge bg-secondary">Draft</span>
+                    {% elif k.status_klaim == 'submitted' %}
+                    <span class="badge bg-primary">Submitted</span>
+                    {% elif k.status_klaim == 'paid' %}
+                    <span class="badge bg-success">Lunas</span>
+                    {% else %}
+                    <span class="badge bg-warning">{{ k.status_klaim }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('bpjs.klaim_detail', id=k.id) }}" class="btn btn-sm btn-info">Detail</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Belum ada klaim</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

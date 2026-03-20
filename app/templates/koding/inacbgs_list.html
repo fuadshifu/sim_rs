@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}INA-CBGs{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-code-square"></i> INA-CBGs (Tarif BPJS)</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('koding.inacbgs_baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Tambah Kode
+        </a>
+        <a href="{{ url_for('koding.index') }}" class="btn btn-secondary">
+            ICD-10
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Kode CBG</th>
+                <th>Nama</th>
+                <th>Kategori</th>
+                <th>Tarif</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inac in inacbgs_list %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><strong>{{ inac.kode_cbg }}</strong></td>
+                <td>{{ inac.nama_cbg }}</td>
+                <td>{{ inac.kategori }}</td>
+                <td>Rp {{ "{:,.0f}".format(inac.tarif or 0) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Belum ada kode INA-CBGs</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
