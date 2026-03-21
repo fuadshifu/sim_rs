@@ -1,0 +1,80 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Bank Darah{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-droplet-fill"></i> Bank Darah</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <a href="{{ url_for('bank_darah.stok_list') }}" class="btn btn-primary">Kelola Stok</a>
+        <a href="{{ url_for('bank_darah.pendonor_list') }}" class="btn btn-info">Pendonor</a>
+        <a href="{{ url_for('bank_darah.permintaan_list') }}" class="btn btn-warning">Permintaan</a>
+        <a href="{{ url_for('bank_darah.expired_list') }}" class="btn btn-danger">Darah Expired</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Stok Darah Saat Ini</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    {% for gol, total in summary.items() %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h4>{{ total }}</h4>
+                                <p>Kantong</p>
+                                <strong>{{ gol }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if expired_soon %}
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5>Perhatian: Darah Mendekati Expired</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Gol. Darah</th>
+                            <th>Komponen</th>
+                            <th>Jumlah</th>
+                            <th>Expire Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in expired_soon %}
+                        <tr>
+                            <td>{{ s.gol_darah.nama }}</td>
+                            <td>{{ s.komponen }}</td>
+                            <td>{{ s.jumlah }}</td>
+                            <td>{{ s.expire_date.strftime('%d-%m-%Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

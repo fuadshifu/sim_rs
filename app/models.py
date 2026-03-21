@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from flask_login import UserMixin
 from app import db, login_manager
 
@@ -619,3 +619,286 @@ class JadwalDokter(db.Model):
 
     def __repr__(self):
         return f'<JadwalDokter {self.dokter_id} - {self.hari}>'
+
+
+# ========== RADIOLOGI ==========
+class JenisPemeriksaanRadiologi(db.Model):
+    __tablename__ = 'jenis_pemeriksaan_radiologi'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(100), nullable=False)  # CT Scan, MRI, USG, Rontgen
+    kategori = db.Column(db.String(50))  # radiologi_diagnostik, radiologi_intervensional
+    deskripsi = db.Column(db.Text)
+    aktif = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f'<JenisPemeriksaanRadiologi {self.nama}>'
+
+
+class PemeriksaanRadiologi(db.Model):
+    __tablename__ = 'pemeriksaan_radiologi'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    no_order = db.Column(db.String(50), unique=True)
+    tanggal_order = db.Column(db.DateTime, default=datetime.now)
+    dokter_pengirim_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    status = db.Column(db.String(20), default='menunggu')  # menunggu, diambil, proses, selesai
+    catatan = db.Column(db.Text)
+
+    pasien = db.relationship('Pasien', backref='pemeriksaan_radiologi')
+    dokter_pengirim = db.relationship('User', backref='order_radiologi')
+    details = db.relationship('PemeriksaanRadiologiDetail', backref='pemeriksaan', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<PemeriksaanRadiologi {self.no_order}>'
+
+
+class PemeriksaanRadiologiDetail(db.Model):
+    __tablename__ = 'pemeriksaan_radiologi_detail'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pemeriksaan_radiologi_id = db.Column(db.Integer, db.ForeignKey('pemeriksaan_radiologi.id'), nullable=False)
+    jenis_pemeriksaan_id = db.Column(db.Integer, db.ForeignKey('jenis_pemeriksaan_radiologi.id'), nullable=False)
+    hasil = db.Column(db.Text)
+    gambar_path = db.Column(db.String(255))
+    tanggal_selesai = db.Column(db.DateTime)
+    teknisi_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    jenis_pemeriksaan = db.relationship('JenisPemeriksaanRadiologi')
+    teknisi = db.relationship('User', backref='pemeriksaan_radiologi_teknisi')
+
+    def __repr__(self):
+        return f'<PemeriksaanRadiologiDetail {self.id}>'
+
+
+# ========== BANK DARAH ==========
+class GolonganDarah(db.Model):
+    __tablename__ = 'golongan_darah'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(5), nullable=False)  # A, B, AB, O
+    faktor_rhesus = db.Column(db.String(10))  # positif, negatif
+    aktif = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f'<GolonganDarah {self.nama}{self.faktor_rhesus}>'
+
+
+class StokDarah(db.Model):
+    __tablename__ = 'stok_darah'
+
+    id = db.Column(db.Integer, primary_key=True)
+    gol_darah_id = db.Column(db.Integer, db.ForeignKey('golongan_darah.id'), nullable=False)
+    komponen = db.Column(db.String(50))  # WB, PRC, TC, FFP, Cryo
+    jumlah = db.Column(db.Integer, default=0)  # kantong
+    expire_date = db.Column(db.Date)
+    tanggal_masuk = db.Column(db.Date, default=date.today)
+    status = db.Column(db.String(20), default='tersedia')  # tersedia, kedaluwarsa, digunakan
+
+    gol_darah = db.relationship('GolonganDarah', backref='stok_darah')
+
+    def __repr__(self):
+        return f'<StokDarah {self.gol_darah.nama} {self.komponen}>'
+
+
+class Pendonor(db.Model):
+    __tablename__ = 'pendonor'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nama_lengkap = db.Column(db.String(100), nullable=False)
+    gol_darah_id = db.Column(db.Integer, db.ForeignKey('golongan_darah.id'))
+    tanggal_lahir = db.Column(db.Date)
+    jk = db.Column(db.String(1))  # L, P
+    alamat = db.Column(db.Text)
+    no_telepon = db.Column(db.String(20))
+    terakhir_donor = db.Column(db.Date)
+    aktif = db.Column(db.Boolean, default=True)
+
+    gol_darah = db.relationship('GolonganDarah', backref='pendonor')
+
+    def __repr__(self):
+        return f'<Pendonor {self.nama_lengkap}>'
+
+
+class PermintaanDarah(db.Model):
+    __tablename__ = 'permintaan_darah'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    gol_darah_id = db.Column(db.Integer, db.ForeignKey('golongan_darah.id'), nullable=False)
+    komponen = db.Column(db.String(50))
+    jumlah = db.Column(db.Integer, default=1)
+    dokter_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    tanggal_permintaan = db.Column(db.DateTime, default=datetime.now)
+    status = db.Column(db.String(20), default='menunggu')  # menunggu, disetujui, ditolak, diberikan
+    catatan = db.Column(db.Text)
+
+    pasien = db.relationship('Pasien', backref='permintaan_darah')
+    gol_darah = db.relationship('GolonganDarah', backref='permintaan_darah')
+    dokter = db.relationship('User', backref='permintaan_darah')
+
+    def __repr__(self):
+        return f'<PermintaanDarah {self.id}>'
+
+
+class TransaksiDarah(db.Model):
+    __tablename__ = 'transaksi_darah'
+
+    id = db.Column(db.Integer, primary_key=True)
+    stok_darah_id = db.Column(db.Integer, db.ForeignKey('stok_darah.id'), nullable=False)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    permintaan_id = db.Column(db.Integer, db.ForeignKey('permintaan_darah.id'))
+    tanggal_transfusi = db.Column(db.DateTime, default=datetime.now)
+    dokter_pemeriksa_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    stok_darah = db.relationship('StokDarah', backref='transaksi_darah')
+    pasien = db.relationship('Pasien', backref='transaksi_darah')
+    permintaan = db.relationship('PermintaanDarah', backref='transaksi_darah')
+    dokter = db.relationship('User', backref='transaksi_darah')
+
+    def __repr__(self):
+        return f'<TransaksiDarah {self.id}>'
+
+
+# ========== OK (OPERATING ROOM) ==========
+class KamarOK(db.Model):
+    __tablename__ = 'kamar_ok'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(50), nullable=False)  # OK 1, OK 2
+    lokasi = db.Column(db.String(100))
+    kapasitas = db.Column(db.Integer, default=1)
+    peralatan = db.Column(db.Text)
+    aktif = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f'<KamarOK {self.nama}>'
+
+
+class Operasi(db.Model):
+    __tablename__ = 'operasi'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    no_operasi = db.Column(db.String(50), unique=True)
+    tanggal_operasi = db.Column(db.DateTime)
+    diagnosis = db.Column(db.Text)
+    prosedur = db.Column(db.Text)  # ICD-9
+    dokter_surgeon_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    dokter_anestesi_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    status = db.Column(db.String(20), default='terjadwal')  # terjadwal, proses, selesai, batal
+    catatan = db.Column(db.Text)
+
+    pasien = db.relationship('Pasien', backref='operasi')
+    dokter_surgeon = db.relationship('User', foreign_keys=[dokter_surgeon_id], backref='operasi_surgeon')
+    dokter_anestesi = db.relationship('User', foreign_keys=[dokter_anestesi_id], backref='operasi_anestesi')
+    jadwal = db.relationship('JadwalOK', backref='operasi', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<Operasi {self.no_operasi}>'
+
+
+class JadwalOK(db.Model):
+    __tablename__ = 'jadwal_ok'
+
+    id = db.Column(db.Integer, primary_key=True)
+    operasi_id = db.Column(db.Integer, db.ForeignKey('operasi.id'), nullable=False)
+    kamar_ok_id = db.Column(db.Integer, db.ForeignKey('kamar_ok.id'), nullable=False)
+    tanggal = db.Column(db.Date)
+    jam_mulai = db.Column(db.Time)
+    jam_selesai = db.Column(db.Time)
+    status = db.Column(db.String(20), default='terjadwal')  # terjadwal, berlangsung, selesai, batal
+
+    kamar_ok = db.relationship('KamarOK', backref='jadwal_ok')
+
+    def __repr__(self):
+        return f'<JadwalOK {self.tanggal}>'
+
+
+# ========== VK (VERLOS KAMER - KAMAR BERSALIN) ==========
+class KamarVK(db.Model):
+    __tablename__ = 'kamar_vk'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(50), nullable=False)  # VK 1, VK 2, VK 3
+    kapasitas = db.Column(db.Integer, default=1)
+    fasilitas = db.Column(db.Text)  # alat melahirkan, infant warmer, dll
+    status = db.Column(db.String(20), default='tersedia')  # tersedia, occupied, cleaning
+    aktif = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f'<KamarVK {self.nama}>'
+
+
+class RegistrasiKehilangan(db.Model):
+    __tablename__ = 'registrasi_kehajibanjembatan'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    no_registrasi = db.Column(db.String(50), unique=True)
+    tanggal_registrasi = db.Column(db.Date, default=date.today)
+    taksiran_persalinan = db.Column(db.Date)
+    risiko_kehamilan = db.Column(db.String(20))  # rendah, tinggi
+    tenaga_penolong = db.Column(db.String(50))  # bidan, dokter
+    aktif = db.Column(db.Boolean, default=True)
+
+    pasien = db.relationship('Pasien', backref='registrasi_kehamilan')
+    pemeriksaan = db.relationship('PemeriksaanKehilangan', backref='registrasi_kehamili', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<RegistrasiKehilangan {self.no_registrasi}>'
+
+
+class PemeriksaanKehilangan(db.Model):
+    __tablename__ = 'pemeriksaan_kehamilan'
+
+    id = db.Column(db.Integer, primary_key=True)
+    registrasi_kehajibanjembatan_id = db.Column(db.Integer, db.ForeignKey('registrasi_kehajibanjembatan.id'), nullable=False)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    tanggal_periksa = db.Column(db.DateTime, default=datetime.now)
+    trimester = db.Column(db.Integer)  # 1, 2, 3
+    berat_badan = db.Column(db.Numeric(5,2))
+    tekanan_darah = db.Column(db.String(20))
+    tinggi_fundus = db.Column(db.Numeric(5,2))
+    detak_jantung_janin = db.Column(db.Integer)
+    diagnosis = db.Column(db.Text)
+    catatan = db.Column(db.Text)
+
+    pasien = db.relationship('Pasien', backref='pemeriksaan_kehamilan')
+
+    def __repr__(self):
+        return f'<PemeriksaanKehilangan {self.id}>'
+
+
+class Persalinan(db.Model):
+    __tablename__ = 'persalinan'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pasien_id = db.Column(db.Integer, db.ForeignKey('pasien.id'), nullable=False)
+    no_persalinan = db.Column(db.String(50), unique=True)
+    tanggal_masuk = db.Column(db.DateTime)
+    tanggal_persalinan = db.Column(db.DateTime)
+    kamar_vk_id = db.Column(db.Integer, db.ForeignKey('kamar_vk.id'))
+    jenis_persalinan = db.Column(db.String(30))  # normal, sectio_caesarea, water_birth
+    diagnosis = db.Column(db.Text)
+    dokter_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    bidan_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    kondisi_ibu = db.Column(db.String(20))  # sehat, komplikasi, meninggal
+    kondisi_bayi = db.Column(db.String(20))  # sehat, komplikasi, meninggal
+    berat_bayi = db.Column(db.Numeric(5,2))  # gram
+    jk_bayi = db.Column(db.String(1))  # L, P
+    status = db.Column(db.String(20), default='dalam_proses')  # dalam_proses, selesai, rujuk
+    catatan = db.Column(db.Text)
+
+    pasien = db.relationship('Pasien', backref='persalinan')
+    kamar_vk = db.relationship('KamarVK', backref='persalinan')
+    dokter = db.relationship('User', foreign_keys=[dokter_id], backref='persalinan_dokter')
+    bidan = db.relationship('User', foreign_keys=[bidan_id], backref='persalinan_bidan')
+
+    def __repr__(self):
+        return f'<Persalinan {self.no_persalinan}>'
+
+
+# ========== BED MANAGEMENT ==========
+# TempatTidur sudah ada, perlu tambah field extension

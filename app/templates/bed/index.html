@@ -1,0 +1,99 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Bed Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-bed"></i> Bed Management</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <a href="{{ url_for('bed.occupancy') }}" class="btn btn-info">Laporan BOR</a>
+        <a href="{{ url_for('bed.turnover') }}" class="btn btn-secondary">Turnover</a>
+        <a href="{{ url_for('bed.waiting') }}" class="btn btn-warning">Waiting List</a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h4>{{ total_beds }}</h4>
+                <p>Total Tempat Tidur</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h4>{{ total_tersedia }}</h4>
+                <p>Tersedia</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h4>{{ total_occupied }}</h4>
+                <p>Occupied</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h4>{{ overall_bor }}%</h4>
+                <p>BOR Keseluruhan</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Ketersediaan Tempat Tidur per Kamar</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Kamar</th>
+                                <th>Kelas</th>
+                                <th>Total</th>
+                                <th>Tersedia</th>
+                                <th>Occupied</th>
+                                <th>Maintenance</th>
+                                <th>BOR %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bed in bed_summary %}
+                            <tr>
+                                <td>{{ bed.kamar.nama }}</td>
+                                <td>{{ bed.kamar.kelas }}</td>
+                                <td>{{ bed.total }}</td>
+                                <td><span class="badge bg-success">{{ bed.tersedia }}</span></td>
+                                <td><span class="badge bg-warning">{{ bed.occupied }}</span></td>
+                                <td><span class="badge bg-secondary">{{ bed.maintenance }}</span></td>
+                                <td>{{ bed.bor }}%</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Belum ada data kamar</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

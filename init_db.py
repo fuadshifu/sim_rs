@@ -4,7 +4,8 @@ Menambahkan roles dan user admin default
 """
 
 from app import create_app, db, bcrypt
-from app.models import Role, User, Poliklinik, Kamar, TempatTidur, Obat, ICD10, ICD9, INACBGs
+from app.models import Role, User, Poliklinik, Kamar, TempatTidur, Obat, ICD10, ICD9, INACBGs, Pasien
+from app.models import JenisPemeriksaanRadiologi, GolonganDarah, KamarOK, KamarVK
 
 def init_db():
     app = create_app('development')
@@ -19,6 +20,7 @@ def init_db():
             Role(name='admin', description='Administrator sistem'),
             Role(name='dokter', description='Dokter'),
             Role(name='perawat', description='Perawat'),
+            Role(name='bidan', description='Bidan'),
             Role(name='apoteker', description='Apoteker'),
             Role(name='kasir', description='Kasir'),
             Role(name='pendaftaran', description='Petugas Pendaftaran'),
@@ -460,6 +462,102 @@ def init_db():
         for inac in inacbgs_list:
             db.session.add(inac)
 
+        # Seed data untuk Radiologi
+        radiologi_list = [
+            JenisPemeriksaanRadiologi(nama='Rontgen Thorax', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan rontgen dada'),
+            JenisPemeriksaanRadiologi(nama='Rontgen Abdomen', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan rontgen perut'),
+            JenisPemeriksaanRadiologi(nama='USG Abdomen', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan USG perut'),
+            JenisPemeriksaanRadiologi(nama='USG Obstetri', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan USG kandungan'),
+            JenisPemeriksaanRadiologi(nama='CT Scan Kepala', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan CT scan kepala'),
+            JenisPemeriksaanRadiologi(nama='CT Scan Abdomen', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan CT scan perut'),
+            JenisPemeriksaanRadiologi(nama='MRI Kepala', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan MRI kepala'),
+            JenisPemeriksaanRadiologi(nama='Mammography', kategori='radiologi_diagnostik', deskripsi='Pemeriksaan payudara'),
+        ]
+        for r in radiologi_list:
+            db.session.add(r)
+
+        # Seed data untuk Golongan Darah
+        gol_darah_list = [
+            GolonganDarah(nama='A', faktor_rhesus='positif'),
+            GolonganDarah(nama='A', faktor_rhesus='negatif'),
+            GolonganDarah(nama='B', faktor_rhesus='positif'),
+            GolonganDarah(nama='B', faktor_rhesus='negatif'),
+            GolonganDarah(nama='AB', faktor_rhesus='positif'),
+            GolonganDarah(nama='AB', faktor_rhesus='negatif'),
+            GolonganDarah(nama='O', faktor_rhesus='positif'),
+            GolonganDarah(nama='O', faktor_rhesus='negatif'),
+        ]
+        for g in gol_darah_list:
+            db.session.add(g)
+
+        # Seed data untuk Kamar OK
+        kamar_ok_list = [
+            KamarOK(nama='OK 1', lokasi='Lantai 2', kapasitas=1, peralatan='General Surgery Set'),
+            KamarOK(nama='OK 2', lokasi='Lantai 2', kapasitas=1, peralatan='Orthopedic Set'),
+            KamarOK(nama='OK 3', lokasi='Lantai 2', kapasitas=1, peralatan='Neurosurgery Set'),
+        ]
+        for k in kamar_ok_list:
+            db.session.add(k)
+
+        # Seed data untuk Kamar VK
+        kamar_vk_list = [
+            KamarVK(nama='VK 1', kapasitas=1, fasilitas='Infant Warmer, Emergency Kit'),
+            KamarVK(nama='VK 2', kapasitas=1, fasilitas='Infant Warmer, Emergency Kit'),
+            KamarVK(nama='VK 3', kapasitas=1, fasilitas='Water Birth Ready'),
+        ]
+        for v in kamar_vk_list:
+            db.session.add(v)
+
+        # Seed data untuk Pasien Sampel
+        from datetime import date, timedelta
+        import random
+
+        def calculate_age(birth_date):
+            today = date.today()
+            age = today.year - birth_date.year
+            if (today.month, today.day) < (birth_date.month, birth_date.day):
+                age -= 1
+            return age
+
+        pasien_list = [
+            # (nama, jk, tanggal_lahir, alamat, no_telepon, goldarah, no_bpjs, kelas_bpjs, nama_keluarga, no_keluarga, alergiobat)
+            ('Ahmad Wijaya', 'L', '1981-03-15', 'Jl. Sudirman No. 45, Jakarta', '081234567890', 'A', '1234567890123', '1', 'Siti Wijaya', '081234567891', ''),
+            ('Sari Dewi', 'P', '1994-07-22', 'Jl. Thamrin No. 78, Jakarta', '081234567892', 'O', '1234567890124', '2', 'Budi Santoso', '081234567893', 'Penisilin'),
+            ('Budi Santoso', 'L', '1968-11-08', 'Jl. Gatot Subroto No. 23, Jakarta', '081234567893', 'AB', '1234567890125', '1', 'Dewi Lestari', '081234567894', ''),
+            ('Aminah', 'P', '1998-02-14', 'Jl. Kebon Jeruk No. 12, Jakarta', '081234567894', 'B', '1234567890126', '3', 'Hendra Gunawan', '081234567895', ''),
+            ('Zhao Jianhua', 'L', '1961-05-30', 'Jl. Senayan No. 56, Jakarta', '081234567895', 'O', '1234567890127', '1', 'Lin Mei', '081234567896', ''),
+            ('Siti Rahayu', 'P', '1991-09-18', 'Jl. Palmerah No. 34, Jakarta', '081234567896', 'A', '1234567890128', '2', 'Joko Pramono', '081234567897', 'Sulfa'),
+            ('Joko Pramono', 'L', '1976-12-25', 'Jl. Slipi No. 67, Jakarta', '081234567897', 'AB', '1234567890129', '1', 'Maryam', '081234567898', ''),
+            ('Maryam', 'P', '2002-01-09', 'Jl. Menteng No. 89, Jakarta', '081234567898', 'B', '1234567890130', '3', 'Ahmad Wijaya', '081234567899', ''),
+            ('Hendra Gunawan', 'L', '1984-06-20', 'Jl. Cilandak No. 11, Jakarta', '081234567899', 'A', '1234567890131', '2', 'Siti Rahayu', '081234567890', 'Kaptopril'),
+            ('Dewi Lestari', 'P', '1996-08-05', 'Jl. Kelapa Gading No. 45, Jakarta', '081234567800', 'O', '1234567890132', '1', 'Budi Santoso', '081234567801', ''),
+            ('Rudi Hermawan', 'L', '1972-04-12', 'Jl. Puri Indah No. 22, Jakarta', '081234567801', 'AB', '1234567890133', '2', 'Wati', '081234567802', ''),
+            ('Nurul Hidayah', 'P', '1989-10-28', 'Jl. Sunrise Avenue No. 55, Jakarta', '081234567802', 'B', '', '', 'Rudi Hermawan', '081234567801', ' ibuprofen'),
+            ('Tono', 'L', '1955-03-03', 'Jl. Tanah Abang No. 33, Jakarta', '081234567803', 'A', '1234567890134', '1', 'Hj. Toniyah', '081234567804', ''),
+            ('Lisa', 'P', '2000-07-17', 'Jl. Mangga Besar No. 77, Jakarta', '081234567804', 'O', '1234567890135', '3', 'Tono', '081234567803', ''),
+            ('Pak Muhammad', 'L', '1978-11-11', 'Jl. Harmoni No. 88, Jakarta', '081234567805', 'AB', '1234567890136', '2', 'Ibu Siti', '081234567806', 'Aspirin'),
+        ]
+
+        for data in pasien_list:
+            nama, jk, tgl_lahir, alamat, telepon, goldarah, no_bpjs, kelas_bpjs, nama_keluarga, no_keluarga, alergiobat = data
+            pasien = Pasien(
+                nik=f"32{random.randint(1000000000, 9999999999)}",
+                nama_lengkap=nama,
+                tanggal_lahir=date.fromisoformat(tgl_lahir),
+                jenis_kelamin=jk,
+                alamat=alamat,
+                no_telepon=telepon,
+                goldarah=goldarah,
+                no_bpjs=no_bpjs if no_bpjs else None,
+                kelas_bpjs=kelas_bpjs if kelas_bpjs else None,
+                status_bpjs='aktif' if no_bpjs else 'tidak',
+                nama_keluarga=nama_keluarga,
+                no_keluarga=no_keluarga,
+                alergiobat=alergiobat if alergiobat else None,
+                aktif=True
+            )
+            db.session.add(pasien)
+
         db.session.commit()
 
         print('Database berhasil diinisialisasi!')
@@ -476,6 +574,11 @@ def init_db():
         print(f'  - {len(icd10_list)} Kode ICD-10')
         print(f'  - {len(icd9_list)} Kode ICD-9')
         print(f'  - {len(inacbgs_list)} Kode INA-CBGs')
+        print(f'  - {len(radiologi_list)} Jenis Pemeriksaan Radiologi')
+        print(f'  - {len(gol_darah_list)} Golongan Darah')
+        print(f'  - {len(kamar_ok_list)} Kamar OK')
+        print(f'  - {len(kamar_vk_list)} Kamar VK')
+        print(f'  - {len(pasien_list)} Pasien Sampel')
 
 if __name__ == '__main__':
     init_db()

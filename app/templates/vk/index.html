@@ -1,0 +1,65 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}VK (Kamar Bersalin){% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-heart-pulse"></i> VK (Verlos Kamer - Kamar Bersalin)</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <a href="{{ url_for('vk.kamar_list') }}" class="btn btn-primary">Kamar VK</a>
+        <a href="{{ url_for('vk.persalinan_list') }}" class="btn btn-info">Persalinan</a>
+        <a href="{{ url_for('vk.kehilangan_list') }}" class="btn btn-warning">Kehamilan (ANC)</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h4>{{ kamar_tersedia }}</h4>
+                <p>Kamar Tersedia</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h4>{{ kamar_occupied }}</h4>
+                <p>Kamar Occupied</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h4>{{ persalinan_hari_ini }}</h4>
+                <p>Persalinan Hari Ini</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Persalinan Dalam Proses</h5>
+            </div>
+            <div class="card-body">
+                {% if dalam_proses > 0 %}
+                <p class="text-warning">Ada {{ dalam_proses }} persalinan yang sedang dalam proses</p>
+                <a href="{{ url_for('vk.persalinan_list') }}" class="btn btn-primary">Lihat Daftar</a>
+                {% else %}
+                <p class="text-success">Tidak ada persalinan dalam proses saat ini</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

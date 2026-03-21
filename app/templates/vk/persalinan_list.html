@@ -1,0 +1,63 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Persalinan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-heart-pulse"></i> Persalinan</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('vk.persalinan_baru') }}" class="btn btn-primary">Input Persalinan</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No. Persalinan</th>
+                <th>Tanggal</th>
+                <th>Pasien</th>
+                <th>Jenis</th>
+                <th>Dokter</th>
+                <th>Bidan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in persalinan_list %}
+            <tr>
+                <td>{{ p.no_persalinan }}</td>
+                <td>{{ p.tanggal_persalinan.strftime('%d-%m-%Y %H:%M') if p.tanggal_persalinan else '-' }}</td>
+                <td>{{ p.pasien.nama_lengkap if p.pasien else '-' }}</td>
+                <td>{{ p.jenis_persalinan if p.jenis_persalinan else '-' }}</td>
+                <td>{{ p.dokter.nama_lengkap if p.dokter else '-' }}</td>
+                <td>{{ p.bidan.nama_lengkap if p.bidan else '-' }}</td>
+                <td>
+                    {% if p.status == 'dalam_proses' %}
+                    <span class="badge bg-warning">Dalam Proses</span>
+                    {% elif p.status == 'selesai' %}
+                    <span class="badge bg-success">Selesai</span>
+                    {% else %}
+                    <span class="badge bg-danger">Rujuk</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('vk.persalinan_detail', id=p.id) }}" class="btn btn-sm btn-info">Detail</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Belum ada data persalinan</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

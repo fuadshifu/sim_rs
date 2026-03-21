@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Registrasi Kehilangan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-heart-pulse"></i> Registrasi Kehilangan (ANC)</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('vk.kehilangan_baru') }}" class="btn btn-primary">Registrasi Ibu Hamil</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No. Registrasi</th>
+                <th>Tanggal Registrasi</th>
+                <th>Pasien</th>
+                <th>Taksiran Persalinan</th>
+                <th>Risiko</th>
+                <th>Tenaga Penolong</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for k in kehamilan_list %}
+            <tr>
+                <td>{{ k.no_registrasi }}</td>
+                <td>{{ k.tanggal_registrasi.strftime('%d-%m-%Y') }}</td>
+                <td>{{ k.pasien.nama_lengkap if k.pasien else '-' }}</td>
+                <td>{{ k.taksiran_persalinan.strftime('%d-%m-%Y') if k.taksiran_persalinan else '-' }}</td>
+                <td>
+                    {% if k.risiko_kehilangan == 'rendah' %}
+                    <span class="badge bg-success">Rendah</span>
+                    {% else %}
+                    <span class="badge bg-danger">Tinggi</span>
+                    {% endif %}
+                </td>
+                <td>{{ k.tenaga_penolong if k.tenaga_penolong else '-' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Belum ada registrasi kehamilan</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

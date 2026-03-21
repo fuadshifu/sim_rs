@@ -1,0 +1,85 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}OK (Operasi){% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-scissors"></i> OK (Operating Room)</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('ok.baru') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Jadwal Operasi Baru
+        </a>
+    </div>
+    <div class="col-md-6">
+        <a href="{{ url_for('ok.kamar_list') }}" class="btn btn-info">Kamar OK</a>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12">
+        <form method="GET" class="d-flex">
+            <select name="status" class="form-select me-2" style="width: 200px;">
+                <option value="">Semua Status</option>
+                <option value="terjadwal" {% if status_filter == 'terjadwal' %}selected{% endif %}>Terjadwal</option>
+                <option value="proses" {% if status_filter == 'proses' %}selected{% endif %}>Sedang Berlangsung</option>
+                <option value="selesai" {% if status_filter == 'selesai' %}selected{% endif %}>Selesai</option>
+                <option value="batal" {% if status_filter == 'batal' %}selected{% endif %}>Batal</option>
+            </select>
+            <button type="submit" class="btn btn-secondary">Filter</button>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>No. Operasi</th>
+                <th>Tanggal</th>
+                <th>Pasien</th>
+                <th>Diagnosis</th>
+                <th>Surgeon</th>
+                <th>Kamar</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in operasi_list %}
+            <tr>
+                <td>{{ o.no_operasi }}</td>
+                <td>{{ o.tanggal_operasi.strftime('%d-%m-%Y %H:%M') if o.tanggal_operasi else '-' }}</td>
+                <td>{{ o.pasien.nama_lengkap if o.pasien else '-' }}</td>
+                <td>{{ o.diagnosis[:30] if o.diagnosis else '-' }}...</td>
+                <td>{{ o.dokter_surgeon.nama_lengkap if o.dokter_surgeon else '-' }}</td>
+                <td>{{ o.jadwal[0].kamar_ok.nama if o.jadwal else '-' }}</td>
+                <td>
+                    {% if o.status == 'terjadwal' %}
+                    <span class="badge bg-primary">Terjadwal</span>
+                    {% elif o.status == 'proses' %}
+                    <span class="badge bg-warning">Sedang Berlangsung</span>
+                    {% elif o.status == 'selesai' %}
+                    <span class="badge bg-success">Selesai</span>
+                    {% else %}
+                    <span class="badge bg-danger">Batal</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('ok.detail', id=o.id) }}" class="btn btn-sm btn-info">Detail</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Belum ada jadwal operasi</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

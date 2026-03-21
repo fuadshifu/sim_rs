@@ -38,6 +38,11 @@ def create_app(config_name='default'):
     from app.routes.bpjs import bpjs_bp
     from app.routes.laporan import laporan_bp
     from app.routes.jadwal import jadwal_bp
+    from app.routes.radiologi import radiologi_bp
+    from app.routes.bank_darah import bank_darah_bp
+    from app.routes.ok import ok_bp
+    from app.routes.vk import vk_bp
+    from app.routes.bed_management import bed_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
@@ -56,6 +61,11 @@ def create_app(config_name='default'):
     app.register_blueprint(bpjs_bp)
     app.register_blueprint(laporan_bp)
     app.register_blueprint(jadwal_bp)
+    app.register_blueprint(radiologi_bp)
+    app.register_blueprint(bank_darah_bp)
+    app.register_blueprint(ok_bp)
+    app.register_blueprint(vk_bp)
+    app.register_blueprint(bed_bp)
 
     # Create tables
     with app.app_context():

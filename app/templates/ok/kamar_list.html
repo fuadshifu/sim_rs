@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Kamar OK{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3><i class="bi bi-door-open"></i> Kamar OK</h3>
+        <hr>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('ok.kamar_baru') }}" class="btn btn-primary">Tambah Kamar</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Nama</th>
+                <th>Lokasi</th>
+                <th>Kapasitas</th>
+                <th>Peralatan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for k in kamar_list %}
+            <tr>
+                <td>{{ k.nama }}</td>
+                <td>{{ k.lokasi if k.lokasi else '-' }}</td>
+                <td>{{ k.kapasitas }}</td>
+                <td>{{ k.peralatan[:50] if k.peralatan else '-' }}...</td>
+                <td>
+                    {% if k.aktif %}
+                    <span class="badge bg-success">Aktif</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Nonaktif</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('ok.kamar_edit', id=k.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Belum ada kamar OK</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

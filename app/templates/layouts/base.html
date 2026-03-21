@@ -115,6 +115,19 @@
                             <li><a class="dropdown-item" href="{{ url_for('laboratorium.jenis') }}">Jenis Pemeriksaan</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="penunjangDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-hospital"></i> Penunjang
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('radiologi.index') }}">Radiologi</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('bank_darah.index') }}">Bank Darah</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ok.index') }}">OK (Operasi)</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('vk.index') }}">VK (Bersalin)</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('bed.index') }}">Bed Management</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('kasir.index') }}"><i class="bi bi-cash-coin"></i> Kasir</a>
                     </li>

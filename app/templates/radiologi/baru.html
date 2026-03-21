@@ -1,0 +1,43 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Order Radiologi{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Order Radiologi Baru</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Pasien</label>
+                        <select name="pasien_id" class="form-select" required>
+                            <option value="">Pilih Pasien</option>
+                            {% for p in pasien_list %}
+                            <option value="{{ p.id }}">{{ p.nama_lengkap }} ({{ p.no_rm }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dokter Pengirim</label>
+                        <select name="dokter_pengirim_id" class="form-select">
+                            <option value="">Pilih Dokter</option>
+                            {% for d in dokter_list %}
+                            <option value="{{ d.id }}">{{ d.nama_lengkap }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Catatan</label>
+                        <textarea name="catatan" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ url_for('radiologi.index') }}" class="btn btn-secondary">Kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
